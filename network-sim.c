@@ -562,14 +562,15 @@ int main(int argc, char *argv[])
   SumStats ss;
   double ystar;
   
-  if(argc != 3)
+  if(argc != 4)
     {
-      printf("Need h, nseeds, and ystar!\n");
+      printf("Need ystar, h, nseeds!\n");
       return 0;
     }
-  het = atof(argv[1]);
-  nseed = atof(argv[2]);
-  ystar = atof(argv[3]);
+   ystar = atof(argv[1]);
+  het = atof(argv[2]);
+  nseed = atof(argv[3]);
+ 
   
   // these, plus the globals at the top, are the default values for the parameter sweeps we'll be doing. the switch below based on the argument provided at the command line modifies these for a particular setup
   perturbtype = 2;                            // how to perturb mtDNAs after fragmentation. 2 is the better version (repeated normal kernel)
