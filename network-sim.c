@@ -1,8 +1,8 @@
+// code to simulate partitioning of mtDNAs given some simulated network structure
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-
-// 12s per row * 11 * 11 * 2 halo * 3 diffuse * 3 het * 3 seed = 78000s = 21h
 
 #define RND drand48()
 #define PI 3.14159
@@ -12,21 +12,22 @@ double DELTA = 0.01;  // growth rate per timestep
 int MAXN = 10000;     // memory limit for number of network segments
 int MAXM = 100;       // number of mtDNAs
 double MASS = 50;     // required network mass
-int NSIM = 20;      // number of simulations for each parameterisation
+int NSIM = 2000;      // number of simulations for each parameterisation
 int NSTEPS = 100;     // number of gaussian steps to take after fragmentation (if this scheme is chosen)
 
-
+// structure to store summary statistics from a set of simulations
 typedef struct {
-  double mw, mm, mn, md, mu, mh;
-  double mw2, mm2, mw3, mm3;
-  double vw, vm, vn, vd, vu, vh;
-  double cwm, cw2m, cw3m, cwm2, cwm3, cw2m2;
-  double muw3, muw4, mum3, mum4;
+double mw, mm, mn, md, mu, mh;
+double mw2, mm2, mw3, mm3;
+double vw, vm, vn, vd, vu, vh;
+double cwm, cw2m, cw3m, cwm2, cwm3, cw2m2;
+double muw3, muw4, mum3, mum4;
 } SumStats;
 
+// structure to store state of a particular simulation
 typedef struct {
-  double wn, wc, mn, mc;
-  double d, u;
+double wn, wc, mn, mc;
+double d, u;
 } Stats;
 
 
@@ -397,7 +398,7 @@ void Output(double *xs, double *ys, double *xe, double *ye, int n, double *mx, d
 
 void GetStats(double *xs, double *ys, double *xe, double *ye, int n, double *mx, double *my, int *mt, int *networked, int *wn, int *wc, int *mn, int *mc, double *d, double *u, double ystar)
 {
-  int i, j;
+   int i, j;
   int counter;
   double mindist;
   double thisdist;
@@ -457,15 +458,18 @@ void GetStats(double *xs, double *ys, double *xe, double *ye, int n, double *mx,
     }
 }
 
+// rather verbose function to compute summary statistics given outputs of NSIM simulations
 void ComputeStats(Stats *s, SumStats *ss)
 {
   double w, m, n;
   int i;
-			    
-  ss->mw = ss->mm = ss->vm = ss->vw = 0;
-  ss->md = ss->vd = ss->mu = ss->vu = ss->mh = ss->vh = 0;
+
+  // initialise all means and variances in the summary structure
+  ss->mw = ss->mm = ss->vm = ss->vw = ss->mn = 0;
+  ss->md = ss->vd = ss->mu = ss->vu = ss->mh = ss->vh = ss->vn = 0;
   ss->cwm = ss->cw2m = ss->cwm2 = ss->cw2m2 = ss->cw3m = ss->cwm3 = 0;
   ss->muw3 = ss->mum3 = ss->muw4 = ss->mum4 = 0;
+  // compute means
   for(i = 0; i < NSIM; i++)
     {
       w = s[i].wn+s[i].wc;
@@ -486,6 +490,8 @@ void ComputeStats(Stats *s, SumStats *ss)
   ss->mw2 /= NSIM; ss->mw3 /= NSIM; ss->mm2 /= NSIM; ss->mm3 /= NSIM;
   ss->mh /= NSIM;
   ss->mu /= NSIM; ss->md /= NSIM;
+
+  // compute variances, covariances, moments
   for(i = 0; i < NSIM; i++)
     {
       w = s[i].wn+s[i].wc;
@@ -571,15 +577,11 @@ int main(int argc, char *argv[])
   inc1s = 0; inc1e = 1; inc1a = 0.1;          // start, end, additive step for inclusion probability for type 1 (=q)
   lambdas = 0; lambdae = 0.1; lambdaa = 0.02;    // start, end, additive step for post-fragmentation perturbation magnitude lambda
   halos = 0; haloe = 0.1; haloa = 0.1;        // start, end, additive step for repulsive "halo" around networked mtDNAs
-  //  hets = 0.1; hete = 0.9; heta = 0.4;         // start, end, additive step for initial heteroplasmy
-  //  nseeds = 4; nseede = 64; nseedm = 4;        // start, end, multiplicative step for number of seeds
-
 
   // allocate memory for mitochondrial strand and mtDNA properties
   // xs,ys: start point for a segment; xe,ye: end point; thetas: direction of that segment; active: whether that segment is actively growing
   // mx,my: position of an mtDNA; mt: genetic type of that mtDNA; networked: whether that mtDNA is in the network or not
-  // cumsum: cumulative sum of segment weights, used for selecting a segment to place an mtDNA
-  // S: array of structures for statistics
+  // stats: array of structures for statistics
   xs = (double*)malloc(sizeof(double)*MAXN);
   ys = (double*)malloc(sizeof(double)*MAXN);
   xe = (double*)malloc(sizeof(double)*MAXN);
@@ -588,72 +590,66 @@ int main(int argc, char *argv[])
   my = (double*)malloc(sizeof(double)*MAXM);
   mt = (int*)malloc(sizeof(int)*MAXM);
   networked = (int*)malloc(sizeof(int)*MAXM);
-
   stats = (Stats*)malloc(sizeof(Stats)*NSIM);
   
   // file for output
   sprintf(str, "output-%.3f-%.3f-%.0f.csv", ystar, het, nseed);
   fpout = fopen(str, "w");
-  fprintf(fpout, "ystar,h,n.seeds,p,q,lambda,halo,");
-  fprintf(fpout, "mw,vw,mm,vm,cwm,cw2m,cw3m,cwm2,cwm3,cw2m2,mh,vh,md,vd,mu,vu\n");
+  fprintf(fpout, "ystar,h,seeds,p,q,lambda,halo,");
+  fprintf(fpout, "mw,vw,mm,vm,cwm,cw2m,cw3m,cwm2,cwm3,cw2m2,mh,vh,md,vd,mu,vu,mn,vn\n");
 
   // workhorse part -- a very nested loop scanning through the parameters, according to the protocol we fixed above
-  // het -- initial heteroplasmy
-  // nseed -- number of network seed points
+  // het -- initial heteroplasmy [from command line]
+  // nseed -- number of network seed points [from command line]
   // inc0 -- probability of a wildtype mtDNA being included in network
   // inc1 -- probability of a mutant mtDNA being included in network
   // lambda -- magnitude of perturbation applied to positions
   // halo -- minimum distance between networked mtDNAs
-  //  for(het = hets; het <= hete; het += heta)
+  for(inc0 = inc0s; inc0 <= inc0e; inc0 += inc0a)
     {
-      //  for(nseed = nseeds; nseed <= nseede; nseed *= nseedm)
+      for(inc1 = inc1s; inc1 <= inc1e; inc1 += inc1a)
 	{
-	  for(inc0 = inc0s; inc0 <= inc0e; inc0 += inc0a)
+	  printf("%.2f %f %f %f\n", het, nseed, inc0, inc1);
+
+	  for(lambda = lambdas; lambda <= lambdae; lambda += lambdaa)
 	    {
-	      for(inc1 = inc1s; inc1 <= inc1e; inc1 += inc1a)
+	      for(halo = halos; halo <= haloe; halo += haloa)
 		{
-		  			      printf("%.2f %f %f %f\n", het, nseed, inc0, inc1);
-
-		   for(lambda = lambdas; lambda <= lambdae; lambda += lambdaa)
+		  // loop through NSIM simulations
+		  for(sim = 0; sim < NSIM; sim++)
 		    {
-		      for(halo = halos; halo <= haloe; halo += haloa)
+
+		      // build network and try to place mtDNAs, keep looping until we have successfully placed all
+		      notdoneyet = -1;
+		      while(notdoneyet)
 			{
-			  // loop through NSIM simulations
-			  for(sim = 0; sim < NSIM; sim++)
-			    {
-
-			      // build network and try to place mtDNAs, keep looping until we have successfully placed all
-			      notdoneyet = -1;
-			      while(notdoneyet)
-				{
-				  BuildNetwork(nseed, xs, ys, xe, ye, &n);
-				  notdoneyet = PlaceDNA(het, inc0, inc1, halo, xs, ys, xe, ye, n, mx, my, mt, networked);
-				}
-
-			      // if we are doing post-fragmentation perturbation, do so
-			      if(lambda)
-				PerturbDNA(lambda, mx, my, perturbtype);
-			 
-			      // decide whether to output snapshots of the system or not
-			      if((inc0 == 0 || (inc0 > 0.49 && inc0 < 0.51) || inc0 > 0.99) && (inc1 == 0 ||  (inc1 > 0.49 && inc1 < 0.51) || inc1 > 0.99) && (lambda == 0 || (lambda > 0.039 && lambda < 0.041) || lambda > 0.099) && sim == 0)
-				Output(xs, ys, xe, ye, n, mx, my, mt, het, nseed, inc0, inc1, lambda, halo, perturbtype);
-
-			      // get and output statistics
-			      GetStats(xs, ys, xe, ye, n, mx, my, mt, networked, &wn, &wc, &mn, &mc, &d, &u, ystar);
-			      stats[sim].wn = wn;
-			      stats[sim].wc = wc;
-			      stats[sim].mn = mn;
-			      stats[sim].mc = mc;			      
-			      stats[sim].u = u;
-			      stats[sim].d = d;
-			    }
-			  ComputeStats(stats, &ss);
-
-  		          fprintf(fpout, "%.3f,%.2f,%.0f,%f,%f,%f,%f,", ystar, het, nseed, inc0, inc1, lambda, halo);
-			  //			  fprintf(fpout, "%e,%e,%e,%e,%e,%e,%e,%e\n", meand, vard, meanu, varu, meann, varn, meanhet, varhet);
-			  fprintf(fpout, "%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e\n", ss.mw, ss.vw, ss.mm, ss.vm, ss.cwm, ss.cw2m, ss.cw3m, ss.cwm2, ss.cwm3, ss.cw2m2, ss.mh, ss.vh, ss.md, ss.vd, ss.mu, ss.vu);
+			  BuildNetwork(nseed, xs, ys, xe, ye, &n);
+			  notdoneyet = PlaceDNA(het, inc0, inc1, halo, xs, ys, xe, ye, n, mx, my, mt, networked);
 			}
+
+		      // if we are doing post-fragmentation perturbation, do so
+		      if(lambda)
+			PerturbDNA(lambda, mx, my, perturbtype);
+			 
+		      // decide whether to output snapshots of the system or not
+		      if((inc0 == 0 || (inc0 > 0.49 && inc0 < 0.51) || inc0 > 0.99) && (inc1 == 0 ||  (inc1 > 0.49 && inc1 < 0.51) || inc1 > 0.99) && (lambda == 0 || (lambda > 0.039 && lambda < 0.041) || lambda > 0.099) && sim == 0)
+			Output(xs, ys, xe, ye, n, mx, my, mt, het, nseed, inc0, inc1, lambda, halo, perturbtype);
+
+		      // get and output statistics
+		      GetStats(xs, ys, xe, ye, n, mx, my, mt, networked, &wn, &wc, &mn, &mc, &d, &u, ystar);
+		      stats[sim].wn = wn;
+		      stats[sim].wc = wc;
+		      stats[sim].mn = mn;
+		      stats[sim].mc = mc;			      
+		      stats[sim].u = u;
+		      stats[sim].d = d;
 		    }
+		  // compute summary statistics for this set of simulations
+		  ComputeStats(stats, &ss);
+
+		  // output statistics for this set
+		  fprintf(fpout, "%.3f,%.2f,%.0f,%f,%f,%f,%f,", ystar, het, nseed, inc0, inc1, lambda, halo);
+		  fprintf(fpout, "%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e\n", ss.mw, ss.vw, ss.mm, ss.vm, ss.cwm, ss.cw2m, ss.cw3m, ss.cwm2, ss.cwm3, ss.cw2m2, ss.mh, ss.vh, ss.md, ss.vd, ss.mu, ss.vu, ss.mn, ss.vn);
 		}
 	    }
 	}
