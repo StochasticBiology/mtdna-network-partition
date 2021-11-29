@@ -397,7 +397,7 @@ void Output(double *xs, double *ys, double *xe, double *ye, int n, double *mx, d
 
 void GetStats(double *xs, double *ys, double *xe, double *ye, int n, double *mx, double *my, int *mt, int *networked, int *wn, int *wc, int *mn, int *mc, double *d, double *u, double ystar)
 {
-  int i, j;
+   int i, j;
   int counter;
   double mindist;
   double thisdist;
@@ -594,8 +594,9 @@ int main(int argc, char *argv[])
   // file for output
   sprintf(str, "output-%.3f-%.3f-%.0f.csv", ystar, het, nseed);
   fpout = fopen(str, "w");
-  fprintf(fpout, "ystar,h,n.seeds,p,q,lambda,halo,");
-  fprintf(fpout, "mw,vw,mm,vm,cwm,cw2m,cw3m,cwm2,cwm3,cw2m2,mh,vh,md,vd,mu,vu\n");
+
+  fprintf(fpout, "ystar,h,seeds,p,q,lambda,halo,");
+  fprintf(fpout, "mw,vw,mm,vm,cwm,cw2m,cw3m,cwm2,cwm3,cw2m2,mh,vh,md,vd,mu,vu,mn,vn\n");
 
   // workhorse part -- a very nested loop scanning through the parameters, according to the protocol we fixed above
   // het -- initial heteroplasmy
@@ -633,27 +634,26 @@ int main(int argc, char *argv[])
 			      // if we are doing post-fragmentation perturbation, do so
 			      if(lambda)
 				PerturbDNA(lambda, mx, my, perturbtype);
-			 
-			      // decide whether to output snapshots of the system or not
-			      if((inc0 == 0 || (inc0 > 0.49 && inc0 < 0.51) || inc0 > 0.99) && (inc1 == 0 ||  (inc1 > 0.49 && inc1 < 0.51) || inc1 > 0.99) && (lambda == 0 || (lambda > 0.039 && lambda < 0.041) || lambda > 0.099) && sim == 0)
-				Output(xs, ys, xe, ye, n, mx, my, mt, het, nseed, inc0, inc1, lambda, halo, perturbtype);
+				      // decide whether to output snapshots of the system or not
+		      if((inc0 == 0 || (inc0 > 0.49 && inc0 < 0.51) || inc0 > 0.99) && (inc1 == 0 ||  (inc1 > 0.49 && inc1 < 0.51) || inc1 > 0.99) && (lambda == 0 || (lambda > 0.039 && lambda < 0.041) || lambda > 0.099) && sim == 0)
+			Output(xs, ys, xe, ye, n, mx, my, mt, het, nseed, inc0, inc1, lambda, halo, perturbtype);
 
-			      // get and output statistics
-			      GetStats(xs, ys, xe, ye, n, mx, my, mt, networked, &wn, &wc, &mn, &mc, &d, &u, ystar);
-			      stats[sim].wn = wn;
-			      stats[sim].wc = wc;
-			      stats[sim].mn = mn;
-			      stats[sim].mc = mc;			      
-			      stats[sim].u = u;
-			      stats[sim].d = d;
-			    }
-			  ComputeStats(stats, &ss);
-
-  		          fprintf(fpout, "%.3f,%.2f,%.0f,%f,%f,%f,%f,", ystar, het, nseed, inc0, inc1, lambda, halo);
-			  //			  fprintf(fpout, "%e,%e,%e,%e,%e,%e,%e,%e\n", meand, vard, meanu, varu, meann, varn, meanhet, varhet);
-			  fprintf(fpout, "%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e\n", ss.mw, ss.vw, ss.mm, ss.vm, ss.cwm, ss.cw2m, ss.cw3m, ss.cwm2, ss.cwm3, ss.cw2m2, ss.mh, ss.vh, ss.md, ss.vd, ss.mu, ss.vu);
-			}
+		      // get and output statistics
+		      GetStats(xs, ys, xe, ye, n, mx, my, mt, networked, &wn, &wc, &mn, &mc, &d, &u, ystar);
+		      stats[sim].wn = wn;
+		      stats[sim].wc = wc;
+		      stats[sim].mn = mn;
+		      stats[sim].mc = mc;			      
+		      stats[sim].u = u;
+		      stats[sim].d = d;
 		    }
+		  // compute summary statistics for this set of simulations
+		  ComputeStats(stats, &ss);
+
+		  // output statistics for this set
+		  fprintf(fpout, "%.3f,%.2f,%.0f,%f,%f,%f,%f,", ystar, het, nseed, inc0, inc1, lambda, halo);
+		  fprintf(fpout, "%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e\n", ss.mw, ss.vw, ss.mm, ss.vm, ss.cwm, ss.cw2m, ss.cw3m, ss.cwm2, ss.cwm3, ss.cw2m2, ss.mh, ss.vh, ss.md, ss.vd, ss.mu, ss.vu, ss.mn, ss.vn);
+
 		}
 	    }
 	}
