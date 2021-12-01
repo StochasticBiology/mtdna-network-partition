@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #define RND drand48()
 #define PI 3.14159
@@ -561,25 +562,42 @@ int main(int argc, char *argv[])
   Stats *stats;
   SumStats ss;
   double ystar;
+  int error;
   
-  if(argc != 4)
-    {
-      printf("Need ystar, h, nseeds!\n");
-      return 0;
-    }
-   ystar = atof(argv[1]);
-  het = atof(argv[2]);
-  nseed = atof(argv[3]);
- 
-  
-  // these, plus the globals at the top, are the default values for the parameter sweeps we'll be doing. the switch below based on the argument provided at the command line modifies these for a particular setup
-  perturbtype = 2;                            // how to perturb mtDNAs after fragmentation. 2 is the better version (repeated normal kernel)
-  inc0s = 0; inc0e = 1; inc0a = 0.1;          // start, end, additive step for inclusion probability for type 0 (=p)
-  inc1s = 0; inc1e = 1; inc1a = 0.1;          // start, end, additive step for inclusion probability for type 1 (=q)
-  lambdas = 0; lambdae = 0.1; lambdaa = 0.02;    // start, end, additive step for post-fragmentation perturbation magnitude lambda
-  halos = 0; haloe = 0.1; haloa = 0.1;        // start, end, additive step for repulsive "halo" around networked mtDNAs
+  error = 1;
 
-  // allocate memory for mitochondrial strand and mtDNA properties
+  if(argc == 5 || argc == 9)
+    {
+  if(argc == 5 && strcmp(argv[1], "--simulate\0") == 0)
+    {
+      expt = 1;
+         ystar = atof(argv[2]);
+  het = atof(argv[3]);
+  nseed = atof(argv[4]);
+  error = 0;
+    }
+    if(argc == 9 && strcmp(argv[1], "--snapshots\0") == 0)
+    {
+      expt = 0;
+      error = 0;
+               ystar = atof(argv[2]);
+  het = atof(argv[3]);
+  nseed = atof(argv[4]);
+inc0 = atof(argv[5]);
+ inc1 = atof(argv[6]);
+lambda = atof(argv[7]);
+halo = atof(argv[8]);
+    }
+    }
+  
+  if(error == 1)
+    {
+      printf("Usage:\n  ./network-sim.ce --snapshots [ystar] [h] [seeds] [p] [q] [lambda] [halo]\n    [provide cell snapshots and exit]\n");
+      printf("  ./network.sim.ce --simulate [ystar] [h] [seeds]\n    [simulate with ystar=0.1, h=0.5, seeds=16\n");
+      return -1;
+    }
+
+    // allocate memory for mitochondrial strand and mtDNA properties
   // xs,ys: start point for a segment; xe,ye: end point; thetas: direction of that segment; active: whether that segment is actively growing
   // mx,my: position of an mtDNA; mt: genetic type of that mtDNA; networked: whether that mtDNA is in the network or not
   // stats: array of structures for statistics
@@ -591,14 +609,42 @@ int main(int argc, char *argv[])
   my = (double*)malloc(sizeof(double)*MAXM);
   mt = (int*)malloc(sizeof(int)*MAXM);
   networked = (int*)malloc(sizeof(int)*MAXM);
-  stats = (Stats*)malloc(sizeof(Stats)*NSIM);
+
+  if(expt == 0)
+    {
+      		      // build network and try to place mtDNAs, keep looping until we have successfully placed all
+		      notdoneyet = -1;
+		      while(notdoneyet)
+			{
+			  BuildNetwork(nseed, xs, ys, xe, ye, &n);
+			  notdoneyet = PlaceDNA(het, inc0, inc1, halo, xs, ys, xe, ye, n, mx, my, mt, networked);
+			}
+
+		      // if we are doing post-fragmentation perturbation, do so
+		      if(lambda)
+			PerturbDNA(lambda, mx, my, perturbtype);
+			 
+		      // decide whether to output snapshots of the system or not
+			Output(xs, ys, xe, ye, n, mx, my, mt, het, nseed, inc0, inc1, lambda, halo, perturbtype);
+			return 0;
+    }
   
+  // these, plus the globals at the top, are the default values for the parameter sweeps we'll be doing. the switch below based on the argument provided at the command line modifies these for a particular setup
+  perturbtype = 2;                            // how to perturb mtDNAs after fragmentation. 2 is the better version (repeated normal kernel)
+  inc0s = 0; inc0e = 1; inc0a = 0.1;          // start, end, additive step for inclusion probability for type 0 (=p)
+  inc1s = 0; inc1e = 1; inc1a = 0.1;          // start, end, additive step for inclusion probability for type 1 (=q)
+  lambdas = 0; lambdae = 0.1; lambdaa = 0.02;    // start, end, additive step for post-fragmentation perturbation magnitude lambda
+  halos = 0; haloe = 0.1; haloa = 0.1;        // start, end, additive step for repulsive "halo" around networked mtDNAs
+
+  stats = (Stats*)malloc(sizeof(Stats)*NSIM);
+
   // file for output
   sprintf(str, "output-%.3f-%.3f-%.0f.csv", ystar, het, nseed);
   fpout = fopen(str, "w");
   fprintf(fpout, "ystar,h,seeds,p,q,lambda,halo,");
   fprintf(fpout, "mw,vw,mm,vm,cwm,cw2m,cw3m,cwm2,cwm3,cw2m2,muw3,mum3,muw4,mum4,mh,vh,md,vd,mu,vu,mn,vn\n");
 
+  
   // workhorse part -- a very nested loop scanning through the parameters, according to the protocol we fixed above
   // het -- initial heteroplasmy [from command line]
   // nseed -- number of network seed points [from command line]
@@ -632,10 +678,6 @@ int main(int argc, char *argv[])
 		      if(lambda)
 			PerturbDNA(lambda, mx, my, perturbtype);
 			 
-		      // decide whether to output snapshots of the system or not
-		      if((inc0 == 0 || (inc0 > 0.49 && inc0 < 0.51) || inc0 > 0.99) && (inc1 == 0 ||  (inc1 > 0.49 && inc1 < 0.51) || inc1 > 0.99) && (lambda == 0 || (lambda > 0.039 && lambda < 0.041) || lambda > 0.099) && sim == 0)
-			Output(xs, ys, xe, ye, n, mx, my, mt, het, nseed, inc0, inc1, lambda, halo, perturbtype);
-
 		      // get and output statistics
 		      GetStats(xs, ys, xe, ye, n, mx, my, mt, networked, &wn, &wc, &mn, &mc, &d, &u, ystar);
 		      stats[sim].wn = wn;
@@ -655,6 +697,7 @@ int main(int argc, char *argv[])
 	    }
 	}
     }
+
   fclose(fpout);
   
   return 0;
