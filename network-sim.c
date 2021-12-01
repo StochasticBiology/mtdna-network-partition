@@ -12,7 +12,7 @@ double DELTA = 0.01;  // growth rate per timestep
 int MAXN = 10000;     // memory limit for number of network segments
 int MAXM = 100;       // number of mtDNAs
 double MASS = 50;     // required network mass
-int NSIM = 2000;      // number of simulations for each parameterisation
+int NSIM = 100;      // number of simulations for each parameterisation
 int NSTEPS = 100;     // number of gaussian steps to take after fragmentation (if this scheme is chosen)
 
 // structure to store summary statistics from a set of simulations
@@ -597,7 +597,7 @@ int main(int argc, char *argv[])
   sprintf(str, "output-%.3f-%.3f-%.0f.csv", ystar, het, nseed);
   fpout = fopen(str, "w");
   fprintf(fpout, "ystar,h,seeds,p,q,lambda,halo,");
-  fprintf(fpout, "mw,vw,mm,vm,cwm,cw2m,cw3m,cwm2,cwm3,cw2m2,mh,vh,md,vd,mu,vu,mn,vn\n");
+  fprintf(fpout, "mw,vw,mm,vm,cwm,cw2m,cw3m,cwm2,cwm3,cw2m2,muw3,mum3,muw4,mum4,mh,vh,md,vd,mu,vu,mn,vn\n");
 
   // workhorse part -- a very nested loop scanning through the parameters, according to the protocol we fixed above
   // het -- initial heteroplasmy [from command line]
@@ -650,7 +650,7 @@ int main(int argc, char *argv[])
 
 		  // output statistics for this set
 		  fprintf(fpout, "%.3f,%.2f,%.0f,%f,%f,%f,%f,", ystar, het, nseed, inc0, inc1, lambda, halo);
-		  fprintf(fpout, "%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e\n", ss.mw, ss.vw, ss.mm, ss.vm, ss.cwm, ss.cw2m, ss.cw3m, ss.cwm2, ss.cwm3, ss.cw2m2, ss.mh, ss.vh, ss.md, ss.vd, ss.mu, ss.vu, ss.mn, ss.vn);
+		  fprintf(fpout, "%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e\n", ss.mw, ss.vw, ss.mm, ss.vm, ss.cwm, ss.cw2m, ss.cw3m, ss.cwm2, ss.cwm3, ss.cw2m2, ss.muw3, ss.mum3, ss.muw4, ss.mum4, ss.mh, ss.vh, ss.md, ss.vd, ss.mu, ss.vu, ss.mn, ss.vn);
 		}
 	    }
 	}
