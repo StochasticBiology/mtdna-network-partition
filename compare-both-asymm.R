@@ -10,19 +10,20 @@ args = commandArgs(trailingOnly=TRUE)
 
 cat("Processing inputs...\n")
 
-if(length(args) < 5) {
-  stop("Need: input file, whether to do repulsion (0/1), n, network mass, output label")
+if(length(args) < 7) {
+  stop("Need: input file, whether to do repulsion (0/1), n, network mass, h to plot, ystar to plot, output label")
 }
 
 # default options
-#args = c("output-asymm-0.5.csv", 0, 100, 50, 0.5, "asymm-0.5")
+#args = c("output-asymm-0.25.csv", 0, 100, 50, 0.5, 0.25, "asymm-0.25")
 
 inputfile = args[1]
 repel = ifelse(args[2]==0, F, T)
 n = as.numeric(args[3])
 mass = as.numeric(args[4])
 h.to.plot = as.numeric(args[5])
-label = args[6]
+ystar.to.plot = as.numeric(args[6])
+label = args[7]
 
 cat("Loading libraries...\n")
 
@@ -71,24 +72,28 @@ vhpred = function(alpha, beta, p, q, h, n, ystar) {
      
   # third and fourth central moments for networked and cytoplasmic w and m
   mwn3 = ( (h-1)*n*p*alpha*beta*(alpha-beta) * (2*(h-1)*(h-1)*n*n*p*p - 3*(h-1)*n*p*(alpha+beta) + (alpha+beta)*(alpha+beta)) ) / ( (alpha+beta)*(alpha+beta)*(alpha+beta)*(1 + alpha + beta)*(2 + alpha + beta)  )
-  mwc3 = (1-p)*(1-h)*n*(eu*(1-3*eu) + 2*eu*eu*eu)
-  
+#  mwc3 = (1-p)*(1-h)*n*(eu*(1-3*eu) + 2*eu*eu*eu)
+ mwc3 = wc*(pc - 3*pc*pc + 2*pc*pc*pc)
+ 
   mwn4 = ( (1-h)*n*p*alpha*beta*( -3*(h-1)^3 * n^3 * p^3 * (alpha*(beta-2)*beta + 2*beta^2 + alpha^2*(beta+2)) +
     6*(h-1)^2 * n^2 * p^2 *( 2*alpha^2*beta^2 + 2*beta^3 + alpha*beta^3 + alpha^3*(beta+2)) +
     (alpha+beta)^3 * (alpha^2 + (beta-1)*beta - alpha*(1+4*beta) ) + (1-h)*n*p*(alpha+beta)^2 *
     (alpha^2*(7 + 3*beta) + beta*(-1+7*beta) + alpha*(-1 - 10*beta + 3*beta^2))) ) /
     ((alpha+beta)^4*(1+alpha+beta)*(2+alpha+beta)*(3+alpha+beta))
-  mwc4 = (1-p)*(1-h)*n*( eu - eu*eu + ( 3*(1-p)*(1-h)*n - 6)*(eu^2 - 2*eu^3 + eu^4) )
+#  mwc4 = (1-p)*(1-h)*n*( eu - eu*eu + ( 3*(1-p)*(1-h)*n - 6)*(eu^2 - 2*eu^3 + eu^4) )
+  mwc4 = wn*pc*(1-pc)*(1 + (3*wc-6)*pc*(1-pc))
   
   mmn3 = - ( h*n*q*alpha*beta*(alpha-beta) * (2*h*h*n*n*q*q - 3*h*n*q*(alpha+beta) + (alpha+beta)*(alpha+beta)) ) / ( (alpha+beta)*(alpha+beta)*(alpha+beta)*(1 + alpha + beta)*(2 + alpha + beta)  )
-  mmc3 = (1-q)*h*n*(eu*(1-3*eu) + 2*eu*eu*eu)
-  
+#  mmc3 = (1-q)*h*n*(eu*(1-3*eu) + 2*eu*eu*eu)
+ mmc3 = mc*(pc - 3*pc*pc + 2*pc*pc*pc)
+ 
   mmn4 = ( h*n*q*alpha*beta*( 3*h^3 * n^3 * q^3 * (alpha*(beta-2)*beta + 2*beta^2 + alpha^2*(beta+2)) +
     6*h^2 * n^2 * q^2 *( 2*alpha^2*beta^2 + 2*beta^3 + alpha*beta^3 + alpha^3*(beta+2)) +
     (alpha+beta)^3 * (alpha^2 + (beta-1)*beta - alpha*(1+4*beta) ) + h*n*q*(alpha+beta)^2 *
     (alpha^2*(7 + 3*beta) + beta*(-1+7*beta) + alpha*(-1 - 10*beta + 3*beta^2))) ) /
     ((alpha+beta)^4*(1+alpha+beta)*(2+alpha+beta)*(3+alpha+beta))
-  mmc4 = (1-q)*h*n*( eu - eu*eu + ( 3*(1-q)*h*n - 6)*(eu^2 - 2*eu^3 + eu^4) )
+#  mmc4 = (1-q)*h*n*( eu - eu*eu + ( 3*(1-q)*h*n - 6)*(eu^2 - 2*eu^3 + eu^4) )
+mmc4 = mc*pc*(1-pc)*(1 + (3*mc-6)*pc*(1-pc))
 
   # central moments for total w and m
   mm3 = mmn3+mmc3
@@ -241,7 +246,7 @@ colfn = scale_fill_gradientn(colours = c("black", "blue", "white", "red", "black
 colfn2 = scale_fill_gradientn(colours = c("black", "blue", "white", "red", "black"), values = c(0, 0.05, 0.1, 0.2, 1), limits = c(-30,270))
 
 plot.h = h.to.plot
-plot.ystar = 0.
+plot.ystar = ystar.to.plot
 plot.df = res.1.df[res.1.df$h==plot.h & res.1.df$ystar==plot.ystar,]
 maxvh = max(plot.df$vhsim)
 
