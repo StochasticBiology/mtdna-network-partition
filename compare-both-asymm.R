@@ -192,6 +192,13 @@ if(repel == T) {
   test.df = df[df$lambda==0&df$halo==0,]
 }
 
+# uncomment for old sim code where moments were accidentally not normalised
+#nit = 100
+#test.df$muw3 = test.df$muw3 / nit
+#test.df$muw4 = test.df$muw4 / nit
+#test.df$mum3 = test.df$mum3 / nit
+#test.df$mum4 = test.df$mum4 / nit
+
 cat("Computing predictions...\n")
 
 # initialise a dataframe storing theory-simulation comparison for each parameterisation
