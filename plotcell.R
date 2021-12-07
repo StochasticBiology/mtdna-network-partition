@@ -41,8 +41,8 @@ plot.3 = makeplot("0.5-4-1.00-0.00-0.00-0.00-2", "low nseed, p=1,q=0")
 plot.4 = makeplot("0.5-16-0.50-0.50-0.00-0.00-2", "mid nseed, p=q=0.5")
 plot.5 = makeplot("0.5-64-0.50-0.50-0.00-0.00-2", "high nseed, p=q=0.5")
 plot.6 = makeplot("0.5-16-1.00-1.00-0.00-0.00-2", "mid nseed, p=q=1")
-plot.7 = makeplot("0.5-16-1.00-1.00-0.40-0.00-2", "mid nseed, p=q=1, mid diff")
-plot.8 = makeplot("0.5-16-1.00-1.00-1.00-0.00-2", "mid nseed, p=q=1, high diff")
+plot.7 = makeplot("0.5-16-1.00-1.00-0.04-0.00-2", "mid nseed, p=q=1, mid diff")
+plot.8 = makeplot("0.5-16-1.00-1.00-0.10-0.00-2", "mid nseed, p=q=1, high diff")
 plot.9 = makeplot("0.5-16-1.00-1.00-0.00-0.10-2", "mid nseed, p=q=1, repel")
 
 # bump to output file

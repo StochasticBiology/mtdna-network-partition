@@ -18,17 +18,17 @@ int NSTEPS = 100;     // number of gaussian steps to take after fragmentation (i
 
 // structure to store summary statistics from a set of simulations
 typedef struct {
-double mw, mm, mn, md, mu, mh;
-double mw2, mm2, mw3, mm3;
-double vw, vm, vn, vd, vu, vh;
-double cwm, cw2m, cw3m, cwm2, cwm3, cw2m2;
-double muw3, muw4, mum3, mum4;
+  double mw, mm, mn, md, mu, mh;
+  double mw2, mm2, mw3, mm3;
+  double vw, vm, vn, vd, vu, vh;
+  double cwm, cw2m, cw3m, cwm2, cwm3, cw2m2;
+  double muw3, muw4, mum3, mum4;
 } SumStats;
 
 // structure to store state of a particular simulation
 typedef struct {
-double wn, wc, mn, mc;
-double d, u;
+  double wn, wc, mn, mc;
+  double d, u;
 } Stats;
 
 
@@ -399,7 +399,7 @@ void Output(double *xs, double *ys, double *xe, double *ye, int n, double *mx, d
 
 void GetStats(double *xs, double *ys, double *xe, double *ye, int n, double *mx, double *my, int *mt, int *networked, int *wn, int *wc, int *mn, int *mc, double *d, double *u, double ystar)
 {
-   int i, j;
+  int i, j;
   int counter;
   double mindist;
   double thisdist;
@@ -569,26 +569,26 @@ int main(int argc, char *argv[])
 
   if(argc == 5 || argc == 9)
     {
-  if(argc == 5 && strcmp(argv[1], "--simulate\0") == 0)
-    {
-      expt = 1;
-         ystar = atof(argv[2]);
-  het = atof(argv[3]);
-  nseed = atof(argv[4]);
-  error = 0;
-    }
-    if(argc == 9 && strcmp(argv[1], "--snapshots\0") == 0)
-    {
-      expt = 0;
-      error = 0;
-               ystar = atof(argv[2]);
-  het = atof(argv[3]);
-  nseed = atof(argv[4]);
-inc0 = atof(argv[5]);
- inc1 = atof(argv[6]);
-lambda = atof(argv[7]);
-halo = atof(argv[8]);
-    }
+      if(argc == 5 && strcmp(argv[1], "--simulate\0") == 0)
+	{
+	  expt = 1;
+	  ystar = atof(argv[2]);
+	  het = atof(argv[3]);
+	  nseed = atof(argv[4]);
+	  error = 0;
+	}
+      if(argc == 9 && strcmp(argv[1], "--snapshots\0") == 0)
+	{
+	  expt = 0;
+	  error = 0;
+	  ystar = atof(argv[2]);
+	  het = atof(argv[3]);
+	  nseed = atof(argv[4]);
+	  inc0 = atof(argv[5]);
+	  inc1 = atof(argv[6]);
+	  lambda = atof(argv[7]);
+	  halo = atof(argv[8]);
+	}
     }
   
   if(error == 1)
@@ -598,7 +598,9 @@ halo = atof(argv[8]);
       return -1;
     }
 
-    // allocate memory for mitochondrial strand and mtDNA properties
+  perturbtype = 2;
+  
+  // allocate memory for mitochondrial strand and mtDNA properties
   // xs,ys: start point for a segment; xe,ye: end point; thetas: direction of that segment; active: whether that segment is actively growing
   // mx,my: position of an mtDNA; mt: genetic type of that mtDNA; networked: whether that mtDNA is in the network or not
   // stats: array of structures for statistics
@@ -613,21 +615,21 @@ halo = atof(argv[8]);
 
   if(expt == 0)
     {
-      		      // build network and try to place mtDNAs, keep looping until we have successfully placed all
-		      notdoneyet = -1;
-		      while(notdoneyet)
-			{
-			  BuildNetwork(nseed, xs, ys, xe, ye, &n);
-			  notdoneyet = PlaceDNA(het, inc0, inc1, halo, xs, ys, xe, ye, n, mx, my, mt, networked);
-			}
+      // build network and try to place mtDNAs, keep looping until we have successfully placed all
+      notdoneyet = -1;
+      while(notdoneyet)
+	{
+	  BuildNetwork(nseed, xs, ys, xe, ye, &n);
+	  notdoneyet = PlaceDNA(het, inc0, inc1, halo, xs, ys, xe, ye, n, mx, my, mt, networked);
+	}
 
-		      // if we are doing post-fragmentation perturbation, do so
-		      if(lambda)
-			PerturbDNA(lambda, mx, my, perturbtype);
+      // if we are doing post-fragmentation perturbation, do so
+      if(lambda)
+	PerturbDNA(lambda, mx, my, perturbtype);
 			 
-		      // decide whether to output snapshots of the system or not
-			Output(xs, ys, xe, ye, n, mx, my, mt, het, nseed, inc0, inc1, lambda, halo, perturbtype);
-			return 0;
+      // decide whether to output snapshots of the system or not
+      Output(xs, ys, xe, ye, n, mx, my, mt, het, nseed, inc0, inc1, lambda, halo, perturbtype);
+      return 0;
     }
   
   // these, plus the globals at the top, are the default values for the parameter sweeps we'll be doing. the switch below based on the argument provided at the command line modifies these for a particular setup
