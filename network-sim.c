@@ -523,6 +523,7 @@ void ComputeStats(Stats *s, SumStats *ss)
   ss->vd /= NSIM-1; ss->vu /= NSIM-1;
   ss->cwm /= NSIM-1; ss->cw2m /= NSIM-1; ss->cw3m /= NSIM-1; ss->cwm2 /= NSIM-1; ss->cwm3 /= NSIM-1; ss->cw2m2 /= NSIM-1;
   ss->vh /= NSIM-1;
+  ss->muw3 /= NSIM-1; ss->mum3 /= NSIM-1; ss->muw4 /= NSIM-1; ss->mum4 /= NSIM-1;
 }
 
 int main(int argc, char *argv[])
