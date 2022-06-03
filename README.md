@@ -8,7 +8,7 @@ Bash for wrapper scripts, C, R with `ggplot2` and `gridExtra` for visualisation
 Wrapper scripts
 ====
 * `run.sh` -- wrapper script for simulation
-* `analyse.sh` -- wrapper script for analysis. Run this after the jobs from `run.sh` have terminated.
+* `analyse-all.sh` -- wrapper script for analysis. Run this after the jobs from `run.sh` have terminated.
 
 Code
 ====
