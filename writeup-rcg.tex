@@ -30,7 +30,7 @@ The proportion of mutant mtDNA in a cell is usually referred to as heteroplasmy,
 
 In the genetic systems of mammalian mitochondria, heteroplasmy levels have been observed to shift between generations \citep{burgstaller2018large, wei2019germline}, where the mitochondrial bottleneck \citep{johnston2015stochastic, johnston2019varied} combined with purifying selection \citep{fan2008mouse, stewart2008strong, hill2014selective, floros2018segregation, lieber2019mitochondrial} acts to keep the germline mitochondria healthy down through generations. In a broader perspective, experimental findings suggests that mtDNA inheritance occurs with both a finer-than-binomial control over the number of mitochondrial nucleoids \citep{jajoo2016accurate} and strong purifying selections \citep{jakubke2021cristae} in fungi and yeast \citep{mendoza2020mitochondrial}. In animals, the mtDNA bottleneck has been suggested to incorporate a number of different mechanisms \cite{johnston2015stochastic}, including mtDNA depletion \citep{cree2008reduction, cao2007mitochondrial, cao2009new}, \textcolor{red}{and?} subpopulation replication \citep{cao2007mitochondrial, wai2008mitochondrial}. Selection and amplification mechanisms are thought to act to prevent increases in cell heteroplasmy levels \textcolor{red}{XXX REFS HERE \citep{stewart2015dynamics,stewart2008strong}}
 
-Models for this segregation have typically regarded the cellular mtDNA population as well-mixed, but the mitochondria containing it has varied morphologies and dynamics in different cell types. Mitochondria can form cell-wide networks in some cell types, undergoing fission and fusion \citep{ mendoza2020mitochondrial, sukhorukov2012emergence, hoitzing2015function, zamponi2018mitochondrial, carlton2020membrane}. These dynamic processes, together with mtDNA turnover, have been shown to be intimately linked to the quality of mtDNA \citep{jakubke2021cristae,pla2019reshaping, chapman2020maintenance}. Whether in somatic tissues \citep{mouli2009frequency, tam2013mathematical, patel2013optimal, tam2015context}, or the germline \citep{edwards2021avoiding, lieber2019mitochondrial}, balance between fusion, fission and selective degradation of individual dysfunctional mitochondria has emerged as a major player in mtDNA quality control \citep{mouli2009frequency,patel2013optimal,twig2008fission, twig2008mitochondrial, figge2012deceleration}. 
+Models for this segregation have typically regarded the cellular mtDNA population as well-mixed, but the mitochondria containing it has varied morphologies and dynamics in different cell types. Mitochondria can form cell-wide networks in some cell types, undergoing fission and fusion \citep{mendoza2020mitochondrial, sukhorukov2012emergence, hoitzing2015function, zamponi2018mitochondrial, carlton2020membrane}. These dynamic processes, together with mtDNA turnover, have been shown to be intimately linked to the quality of mtDNA \citep{jakubke2021cristae,pla2019reshaping, chapman2020maintenance}. Whether in somatic tissues \citep{mouli2009frequency, tam2013mathematical, patel2013optimal, tam2015context}, or the germline \citep{edwards2021avoiding, lieber2019mitochondrial}, balance between fusion, fission and selective degradation of individual dysfunctional mitochondria has emerged as a major player in mtDNA quality control \citep{mouli2009frequency,patel2013optimal,twig2008fission, twig2008mitochondrial, figge2012deceleration}. 
 
 Quantitative progress modelling the spatial influence of these mitochondrial dynamics on mtDNA quality control is advancing \citep{mouli2009frequency, tam2013mathematical, patel2013optimal, tam2015context,figge2012deceleration}. In particular, the role of network dynamics in generating cell-to-cell mtDNA variability via modulating mtDNA turnover has been addressed with recent stochastic modelling \cite{aryaman2019mitochondrial}. However, the influence of mitochondrial network structure on the inheritance of mtDNA during cell divisions remains less studied. Partitioning at cell divisions even in the absence of spatial substructure can constitute an important source of cell-to-cell variability \citep{huh2011non, johnston2015closed}. Given mtDNA resides in mitochondrial nucleoids \citep{ilamathi2021new} that are distributed throughout the mitochondria of the cell, and the mitochondria can form cell-wide networks, we asked how mitochondrial networks might shape mtDNA inheritance under different configurations, and if the networks allow controlled partitioning.
 
@@ -38,21 +38,21 @@ Quantitative progress modelling the spatial influence of these mitochondrial dyn
 \subsection{Network inclusion with genetic bias increases cell-to-cell variability}
 To build intuition about the influence of network structure on mtDNA inheritance, we first considered a simple computational model for the spatial distribution of mitochondria and mtDNA within a cell (see Methods). This model consists of a random network structure, with a tunably heterogeneous distribution, simulated within a circular cell (the dimensionality of the model does not affect the statistical considerations of partitioning). The model network structure is not intended to perfectly match the details of real mitochondrial networks, but rather as a general framework to understand spatial substructure in the cell. The mother cell has $N_0$ mtDNAs, a proportion $h$ of which are mutants ($h$ is heteroplasmy). 
 
-To reflect the fact that different mtDNA types may have different propensities to be included in the reticulated network, we use $p$ and $q$ to describe the proportions of wildtype and mutant mtDNAs respectively that are contained in the network; the remainder are in fragments in the cytoplasm (Fig. \label{fig:main_fig1_plotcell}). Hence, $p > q$ means that wildtype mtDNAs are more likely to be contained in the network and mutant mtDNAs are less likely to be included; $p=q$ means that both types are equally likely to be in a networked state. Network placement can follow various rules (described below) and mtDNA positions may be subsequently perturbed, but we begin with random placement in the network and no subsequent motion prior to division. We then divide the model cell and explore the statistics of mtDNA copy number and heteroplasmy in the daughter cells.
+To reflect the fact that different mtDNA types may have different propensities to be included in the reticulated network, we use $p$ and $q$ to describe the proportions of wildtype and mutant mtDNAs respectively that are contained in the network; the remainder are in fragments in the cytoplasm (Fig. \ref{fig:plotcell}). Hence, $p > q$ means that wildtype mtDNAs are more likely to be contained in the network and mutant mtDNAs are less likely to be included; $p=q$ means that both types are equally likely to be in a networked state. Network placement can follow various rules (described below) and mtDNA positions may be subsequently perturbed, but we begin with random placement in the network and no subsequent motion prior to division. We then divide the model cell and explore the statistics of mtDNA copy number and heteroplasmy in the daughter cells.
 
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{plotcell.png}
-\caption{\textbf{Snapshots of computationally generated networks with tunable physical and genetic parameters in an \textit{in silico} model of mtDNA partitioning}. Networks were generated by a elongation and branching process initialized from a number of seed points (nseed) uniformly distributed on the perimeter of the cell. Small seed numbers (low nseed) usually resulted in heterogeneous network structures, with marked differences in network density across the cell; for large seed number (high nseed), networks were uniformly distributed throughout the cell. Wild type (WT; blue) and mutant type (MT; red) mtDNA molecules were distributed into networks according to the proportions $p$ (WT) and $q$ (MT) and whether or not reticulated mtDNA molecules mutually repulse each other (repel) or not. At cell division, daughter cell statistics were recorded, after which the network was fragmented (no parameter) and individual mtDNA molecules were subjected to repeated diffusion with different strengths (mid/high diff)}\label{fig:main_fig1_plotcell}
+\caption{\textbf{Snapshots of computationally generated networks with tunable physical and genetic parameters in an \textit{in silico} model of mtDNA partitioning}. Networks were generated by a elongation and branching process initialized from a number of seed points (nseed) uniformly distributed on the perimeter of the cell. Small seed numbers (low nseed) usually resulted in heterogeneous network structures, with marked differences in network density across the cell; for large seed number (high nseed), networks were uniformly distributed throughout the cell. Wild type (WT; red) and mutant type (MT; blue) mtDNA molecules were distributed into networks according to the proportions $p$ (WT) and $q$ (MT) and whether or not reticulated mtDNA molecules mutually repulse each other (repel) or not. At cell division, daughter cell statistics were recorded, after which the network was fragmented (no parameter) and individual mtDNA molecules were subjected to repeated diffusion with different strengths (mid/high diff)}\label{fig:plotcell}
 \end{figure}
 
-To explore the influence of mtDNA network placement in the parent cell on the mtDNA statistics of the daughter, we varied network inclusion probabilities $p$ and $q$ and observed copy number and heteroplasmy variance in daughter cells after division (Fig. \ref{fig:sim-model-compare-nonrep}). We found a clear pattern that $V(h)$ takes minimum values when $p=q$, that is when network inclusion probabilities are equal for mutant and wildtype mtDNA. When the two differ, $V(h)$ increases, with highest values occurring when the majority mtDNA type is exclusively contained in the network and the minority type exclusively in the cytoplasm. 
+To explore the influence of mtDNA network placement in the parent cell on the mtDNA statistics of the daughter, we varied network inclusion probabilities $p$ and $q$ and observed copy number and heteroplasmy variance in daughter cells after division (Fig. \ref{fig:sim-model-compare}). We found a clear pattern that $V(h)$ takes minimum values when $p=q$, that is when network inclusion probabilities are equal for mutant and wildtype mtDNA. When the two differ, $V(h)$ increases, with highest values occurring when the majority mtDNA type is exclusively contained in the network and the minority type exclusively in the cytoplasm. 
 
-This result may seem counterintuitive at first glance: when the network is highly heterogeneous, it might be expected that including all mtDNAs there would maximise variance. This is true for copy number variance (Fig. \ref{fig:sim-model-compare-nonrep}), but not for heteroplasmy variance, because including both types equally induces correlation in their inheritance and lowers variance. The maximum $V(h)$ is achieved by embedding the majority type in the high-variance network and having the minority type in the uncorrelated cytoplasm. 
+This result may seem counterintuitive at first glance: when the network is highly heterogeneous, it might be expected that including all mtDNAs there would maximise variance. This is true for copy number variance (Fig. \ref{fig:sim-model-compare}), but not for heteroplasmy variance, because including both types equally induces correlation in their inheritance and lowers variance. The maximum $V(h)$ is achieved by embedding the majority type in the high-variance network and having the minority type in the uncorrelated cytoplasm. 
 
 To gain intuition about this picture, we constructed a statistical model for this process (see Methods). Briefly, we consider four state variables describing the mtDNA population of a daughter cell after a mother divides: $W_n, W_c, M_n, M_c$, for the wildtype ($W$) and mutant ($M$) mtDNAs contained in a reticulated mitochondrial network (${}_n$) or in fragmented mitochondrial elements in the cytoplasmy (${}_c$). An additional variable $U$ describes the proportion of network mass inherited by the daughter cell. The mtDNA profile inherited by the daughter then follows
 
-\begin{equation}
+\begin{equation}\label{eq:model}
     \begin{split}
         & W_n \sim \mathrm{Bin}\left(w_n,U\right) \\
         & W_c \sim \mathrm{Bin}\left(w_c,\frac{1}{2}\right) \\
@@ -60,21 +60,16 @@ To gain intuition about this picture, we constructed a statistical model for thi
         & M_c \sim \mathrm{Bin}\left(m_c,\frac{1}{2}\right),
     \end{split}
 \end{equation}
-
 where $w_n = p(1-h)N_0, w_c = (1-p)(1-h)N_0, m_n = qhN_0, m_c = (1-q)hN_0$. We model the proportion $U$ of network mass inherited by a daughter with a Beta distribution, with variance $V(U)$ allowed to vary to describe different partitioning regimes of network mass -- for example, to compare to simulations, we fit the Beta distribution parameters to match the simulated inherited network variance. As $W_n$ and $M_n$ are then drawn from the compound distribution that is binomial with a beta-distributed probability, and thus follow beta-binomial distributions. We are interested in the variables $N = W_n+W_c+M_n+M_c$ and $h = (M_n+M_c)/N$.
 
 We can immediately numerically extract moments for the system through summing over state variables and calculating expectations, for example, 
 
-\begin{equation}
+\begin{equation}\label{eq:vh-estimate-moments}
     E(f(h)) = \sum_{W_c = 0}^{w_c} P(W_c) \sum_{M_c = 0}^{m_c} P(M_c) \int_0^1 dU \sum_{W_n = 0}^{w_n} P(W_n|U) \sum_{M_n = 0}^{m_n} P(W_n|U) f\left(\frac{M_n+M_c}{W_n+W_c+M_n+M_c}\right).
 \end{equation}
-
-
-%% Added 29.03.22 %%
 Fig. \ref{fig:vhestimate-symm} demonstrates the excellent correspondence between simulated and summed statistics. However, as these large sums do not admit much intuitive analysis, we investigated other approaches. 
 
 We first assume symmetric divisions, so that each daughter inherits half the mother cell volume. The mean and variance of $N$ are readily derived using the laws of iterated expectation and total variance to account for the compound distribution of networked mtDNA (Appendix):
-
 \begin{equation}
     V(N)=\frac{N_0}{4}+\kappa N_0(\kappa N_0-1)V(U)
 \end{equation}
@@ -82,33 +77,33 @@ where $\kappa = p(1-h)+qh$ denotes the proportion of total mtDNA placed in the n
 
 For heteroplasmy variance, as the ratio of random variables, we cannot extract an exact solution and must instead use a Taylor-expanded approximation (see Methods) to obtain 
 
-\be\label{eq:V1h_NetStoch_Complete_MT}
+\be\label{eq:v1h-net}
     V_1'(h)=\frac{1}{N_0} + 4 V(U) \left( h(1-h) (p-q)^2 - (p h + q(1-h))/N_0 \right)
     \ee
 % INSERTED p_f here and below (11.03.22)
 
-Eqn. \ref{eq:V1h_NetStoch_Complete_MT} allows some informative analysis. First, we qualitatively see that an additional, $V(U)$-dependent term is introduced compared to the binomial case (which gives $1/N_0$), illustrating the influence of network heterogeneity on heteroplasmy variance. For large $N_0$, this network term is dominated by the first term in brackets in Eqn. \ref{eq:V1h_NetStoch_Complete_MT}, which is quadratic in $(p-q)$, the difference in inclusion probabilities for the different types of mtDNA. For $p\neq q$, the network is genetically biased towards one of the types, to which there is associated an increase in $V'(h)$. For $p=q$, the network is unbiased, with associated prediction
+Eqn. \ref{eq:v1h-net} allows some informative analysis. First, we qualitatively see that an additional, $V(U)$-dependent term is introduced compared to the binomial case (which gives $1/N_0$), illustrating the influence of network heterogeneity on heteroplasmy variance. For large $N_0$, this network term is dominated by the first term in brackets in Eqn. \ref{eq:v1h-net}, which is quadratic in $(p-q)$, the difference in inclusion probabilities for the different types of mtDNA. For $p\neq q$, the network is genetically biased towards one of the types, to which there is associated an increase in $V'(h)$. For $p=q$, the network is unbiased, with associated prediction
 
 \begin{equation}
 V'_1(h) = \frac{1}{N_0} - \frac{4 p V(U)}{N_0}.
 \end{equation}
 
 %% XXX Robert (21.03.22)
-However, this picture does not completely capture the simulation and exact results, where we see a small increase in (normalized) heteroplasmy variance for non-biased increases in inclusion probabilities, instead of a decrease. This reflects the approximate nature of the Taylor expansion process used to derive Eqn. \ref{eq:V1h_NetStoch_Complete_MT}; in the Appendix we show that a second-order expansion provides a compensatory diagonal term, but in general we will need further terms in the expansion to perfectly match the true behaviour. \textcolor{red}{The excellent correspondence between simulation and model results give great confidence that the full statistical model sufficiently captures real network dynamics for a large range of parameterisations (see e.g., fig. \ref{fig:sim-model-compare-nonrep-10} rows \textbf{B} and \textbf{D}).}
+However, this picture does not completely capture the simulation and exact results, where we see a small increase in (normalized) heteroplasmy variance for non-biased increases in inclusion probabilities, instead of a decrease. This reflects the approximate nature of the Taylor expansion process used to derive Eqn. \ref{eq:v1h-net}; in the Appendix we show that a second-order expansion provides a compensatory diagonal term, but in general we will need further terms in the expansion to perfectly match the true behaviour. \textcolor{red}{The excellent correspondence between simulation and model results give great confidence that the full statistical model sufficiently captures real network dynamics for a large range of parameterisations (see also e.g., fig. \ref{fig:sim-model-compare-10} rows \textbf{B} and \textbf{C}).}
 
 The maximum normalised heteroplasmy variance achievable -- when the majority mtDNA type is completely contained in the network and the minority type completely excluded from it -- is given for example by setting $p = 1, q= 0$ for $h \leq 0.5$:
 
-\begin{equation}\label{eq:max-vh-no-repel-epsilon}
+\begin{equation}\label{eq:symm-max-vh}
    V_1'(h)=\frac{1}{N_0} + 4 V(U) \left( h(1-h) - p h/N_0 \right).
 \end{equation}
 
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{symm-50-fig-sim-est-taylor.png}
-\caption{\textbf{Genetically biased, heterogeneous networks induce cell-to-cell variability in symmetric cell divisions.} $V'(h)$ (left column) and $V(N)$ (right column) for different models of random reticulated mtDNA distributions in rows (\textbf{A}: simulated for $h=0.1$; \textbf{B}: simulated for $h=0.5$; ; \textbf{C}: sum over state variables for $h=0.5$; \textbf{D}: first-order Taylor expansion for $h=0.5$). The three columns to a facet show the different seed numbers, $4, 16$ and $64$, from left to right, respectively, or the values of $\alpha$ corresponding to its respective seed number. In each panel, statistics for different values of wild and mutant type network inclusion parameters $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue. Each $(p,q)$-pair comprises $\mathcal{N}=5000$ symmetric cell divisions. Top row shows simulated $V'(h)$ and $V(n)$ for $h=0.1$, showing $V'(h)$ increases the most for homogeneous networks with strong genetic bias in favor of the majority type. For $h=0.5$, simulation results (row \textbf{B}) are compared to the sum over state variables (row \textbf{C}) and the first-order Taylor expansion (row \textbf{D}) under symmetric cell divisions. The maximum value attained for $V'(h)$ across all parameter sets was for $h=0.5$, also for homogeneous, maximally genetically biased networks, regardless of the type favored by genetic bias. The daughter of interest inherits 50\% of the parent cytoplasm.}\label{fig:sim-model-compare-nonrep}
+\caption{\textbf{Genetically biased, heterogeneous networks induce cell-to-cell variability in symmetric cell divisions.} $V'(h)$ (left column) and $V(N)$ (right column) for different models of random reticulated mtDNA distributions in rows (\textbf{A}: simulated for $h=0.1$; \textbf{B}: simulated for $h=0.5$; ; \textbf{C}: sum over state variables for $h=0.5$; \textbf{D}: first-order Taylor expansion for $h=0.5$). The three columns to a facet show the different seed numbers, $4, 16$ and $64$, from left to right, respectively, or the values of $\alpha$ corresponding to its respective seed number. In each panel, statistics for different values of wild and mutant type network inclusion parameters $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue. Each $(p,q)$-pair comprises $\mathcal{N}=10,000$ symmetric cell divisions. Top row shows simulated $V'(h)$ and $V(n)$ for $h=0.1$, showing $V'(h)$ increases the most for homogeneous networks with strong genetic bias in favor of the majority type. For $h=0.5$, simulation results (row \textbf{B}) are compared to the sum over state variables (row \textbf{C}) and the first-order Taylor expansion (row \textbf{D}) under symmetric cell divisions. The maximum value attained for $V'(h)$ across all parameter sets was for $h=0.5$, also for homogeneous, maximally genetically biased networks, regardless of the type favored by genetic bias. The daughter of interest inherits 50\% of the parent cytoplasm.}\label{fig:sim-model-compare}
 \end{figure}
 
-\subsection{Asymmetric cell divisions are a major source of variability\textcolor{red}{, but can also reduce (normalized) heteroplasmy}}
+\subsection{Asymmetric cell divisions are a major source of variability}
 The above model has assumed that the cell divides symmetrically, with half the cell volume inherited by each daughter. Not all cell divisions in biology follow this picture, with some divisions instead being rather asymmetric. We next asked how the proportion of inherited volume $p_c$ influences the mtDNA statistics in daughters. Clearly, the expected copy number will differ if the inherited proportion differs. The expressions above generalise to
 
 \begin{eqnarray}
@@ -117,27 +112,24 @@ The above model has assumed that the cell divides symmetrically, with half the c
 \end{eqnarray}
 
 %% 13.03.22 R
-with the result that asymmetric cell divisions can generate very large increases in cell-to-cell variability (for example, Fig. \ref{fig:sim-model-compare-nonrep-10}). This is not surprising, since the smaller the proportion inherited is, the larger the probability that the smaller daughter inherits very few mtDNA in total, combined with a very varied mutant proportion, leading to a large variance.
+with the result that asymmetric cell divisions can generate very large increases in cell-to-cell variability (for example, Fig. \ref{fig:sim-model-compare-10}). This is not surprising, since the smaller the proportion inherited is, the larger the probability that the smaller daughter inherits very few mtDNA in total, combined with a very varied mutant proportion, leading to a large variance.
 
 XXX bring in concise version of the appendix discussion of asymmetry here. in particular need to know what is going on with the figure
 
-%% INPROG
-\textcolor{red}{Overall, we find that the basic pattern of mitochondrial inheritance remains the same: $V'(h)$ increases the most for heterogeneous networks with strong genetic bias favoring the majority type mtDNA, and $V(n)$ increases monotonically for any increase in inclusion parameters. There are, however, several noteworthy differences. In contrast to symmetric cell divisions, the maximum value attained for $V'(h)$ was for homogeneous networks with strong genetic bias favoring the majority type (row \textbf{A}, 4 seed points). Intriguingly, also in contrast to symmetric cell divisions, in which homogeneous networks have no effect on $V'(h)$, homogeneous networks can change $V'(h)$, with precise dynamics depending upon the mutant proportion $h$ and inclusion parameters $p$ and $q$ of the parent cell: For $h=0.1$ (row \textbf{A}), genetic bias in network inclusion parameters can induce both an increase ($p=0,q=1$, 64 seed points) and a reduction ($p=1,q=0$, 64 seed points) in $V'(h)$. For $h=0.5$ (row \textbf{B}), however, $V'(h)$ is reduced as $V(n)$ increases for networks without genetic bias. In both cases, there is also a small region in which $V'(h)$ increases for binomial segregation, i.e., the null value is in general not attained.
-Moreover, asymmetric cell divisions shape cell-to-cell variability regardless of mitochondrial dynamics: For $p_c=0.1$, heteroplasmy variance increases from its null value of $0.01$ for symmetric cell divisions to $0.09$, without mitochondrial dynamics. Notably, asymmetric apportioning of cytoplasmic volume increased heteroplasmy variance 3- to 4-fold even when compared with mitochondrial dynamics in the symmetric case; however, the effect increased more than 7-fold, from $V'_{\max}(h)=0.09$ (white; without mitochondrial dynamics for asymmetric cell divisions) to $V'(h)>0.6$ (red/black) for heterogeneous networks that are maximally genetically biased in favor of the majority type mtDNA. Second, we found that network homogeneity did not lead to binomial segregation of mtDNA, as it did for the symmetric case; here, a large subset of inclusion parameters led to changes in $V(n)$.}
+\textcolor{red}{Overall, we find that the basic pattern of mitochondrial inheritance remains the same as for the symmetric case. $V'(h)$ is maximized for heterogeneous networks with strong genetic bias favoring the majority type mtDNA, and $V(n)$ increases monotonically for any increase in inclusion parameters. There are, however, some noteworthy differences when compared to symmetric cell divisions: First, asymmetric cell divisions shape cell-to-cell variability regardless of mitochondrial dynamics: When the daughter of interest inherits 10\% of the parent cytoplasmic volume, i.e., $p_c=0.1$, (normalized) heteroplasmy variance increases from its null value of $0.01$ for symmetric cell divisions to $0.09$, without mitochondrial dynamics. Moreover, asymmetric apportioning of cytoplasmic volume alone is a more powerfull bottleneck than is mitochondrial dynamics alone, increasing heteroplasmy variance about 3-fold when compared with the symmetric case with networks. With mitochondrial dynamics, however, $V'(h)$ increased around 10-fold, from $V'(h)\approx0.03$ to $V'(h)\approx0.3$ for heterogeneous networks that are maximally genetically biased in favor of the majority type mtDNA. The maximum value for $V(n)$ is attained for $p=q=1$ for all parameterisations, whether the cell division is symmetric or not. 
+Now, we expect exactly 10 mtDNA in total in the daughter cell, one (or five) of which are mutant if $h=0.1$ (or $h=0.5$). For this reason, variability is larger also due to small number effects. For instance, if only one mutant mtDNA is inherited, the heteroplasmy is 1; if only one wild type mtDNA is inherited, heteroplasmy is 0. Even absent networks, small number effects are responsible for a large increase in variability; with heterogeneous networks, however, the small number effect is greatly exacerbated due to the fact that the network structure causes some cells to have little network contents into which mtDNA molecules may be placed.
+The Taylor expansion results suffer from the same discrepancy for asymmetric cell divisions as for symmetric ones, with a small decrease, as opposed to the expected increase, along the diagonal $p=q$. Moreover, in contrast to symmetric cell division, the Taylor expansion underestimates also the null value, resulting in a blue streak along the entire diagonal. Once again, the second order terms overcompensates (not shown).}
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{asymm-0.1-10-fig-sim-est-taylor.png}
-\caption{\textbf{Asymmetric cell divisions induce large cell-to-cell variability in mtDNA quality.} $V'(h)$ (left column) and $V(N)$ (right column) for different models of random reticulated mtDNA distributions in rows (\textbf{A}: simulated for $h=0.1$; \textbf{B}: simulated for $h=0.5$; \textbf{C}: sum over state variables; \textbf{D}: first-order Taylor expansion). The three columns to a facet show the different seed numbers, $4, 16$ and $64$, from left to right, respectively, or the values of $\alpha$ corresponding to its respective seed number. In each panel, statistics for different values of wild and mutant type network inclusion parameters $p$ (x-axis) and $q$ (y-axis), respectively, are compared to asymmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue. Each $(p,q)$-pair comprises $\mathcal{N}=5000$ asymmetric cell divisions. Top row shows simulated $V'(h)$ and $V(n)$ for $h=0.1$. For $h=0.5$, simulation results (row \textbf{B}) are compared to the sum over state variables (row \textbf{C}) and the first-order Taylor expansion (row \textbf{D}) under asymmetric cell divisions. The daughter of interest inherits 10\% of the parent cytoplasm.}\label{fig:sim-model-compare-nonrep-10}
+\caption{\textbf{Asymmetric cell divisions induce large cell-to-cell variability in mtDNA quality.} $V'(h)$ (left column) and $V(N)$ (right column) for different models of random reticulated mtDNA distributions in rows (\textbf{A}: simulated for $h=0.1$; \textbf{B}: simulated for $h=0.5$; \textbf{C}: sum over state variables; \textbf{D}: first-order Taylor expansion). The three columns to a facet show the different seed numbers, $4, 16$ and $64$, from left to right, respectively, or the values of $\alpha$ corresponding to its respective seed number. In each panel, statistics for different values of wild and mutant type network inclusion parameters $p$ (x-axis) and $q$ (y-axis), respectively, are compared to asymmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue. Each $(p,q)$-pair comprises $\mathcal{N}=10,000$ asymmetric cell divisions. Top row shows simulated $V'(h)$ and $V(n)$ for $h=0.1$. For $h=0.5$, simulation results (row \textbf{B}) are compared to the sum over state variables (row \textbf{C}) and the first-order Taylor expansion (row \textbf{D}) under asymmetric cell divisions. The daughter of interest inherits 10\% of the parent cytoplasm.}\label{fig:sim-model-compare-10}
 \end{figure}
-\textcolor{red}{The maximum value for $V(n)$ is attained for $p=q=1$ for all parameterisations, whether the cell division is symmetric or not; however, for asymmetric divisions, the increase is not washed away for homogeneous networks, and remains quite large when compared to the 'null' value of $9$. The Taylor expansion results do not fit for asymmetric cell divisions, so we do not report on its maximum value.}
+
 
 \subsection{MtDNA self-avoidance tightens mtDNA copy number control and can reduce heteroplasmy variance}
-We next asked whether the variances of copy number $V(N)$ and heteroplasmy $V(h)$ could be reduced below their `null' binomial value through cellular control. To this end, we modelled self-avoidance of mtDNA molecules within the network, reasoning that such controlled arrangement may allow a more even spread of mtDNAs within the network, and correspondingly lower variability. To accomplish this self-avoidance within our model, we enforce a `halo' of exclusion around each mtDNA placed within the network, so that another networked mtDNA cannot be placed within a distance $r$ of an existing one. The results are shown in Fig. \ref{fig:sim-model-compare-rep}. 
+We next asked whether the variances of copy number $V(N)$ and heteroplasmy $V(h)$ could be reduced below their `null' binomial value through cellular control. To this end, we modelled self-avoidance of mtDNA molecules within the network, reasoning that such controlled arrangement may allow a more even spread of mtDNAs within the network, and correspondingly lower variability. To accomplish this self-avoidance within our model, we enforce a `halo' of exclusion around each mtDNA placed within the network, so that another networked mtDNA cannot be placed within a distance $r$ of an existing one. The results are shown in Fig. \ref{fig:sim-model-compare-rep}.
 
-Copy number variance $V(N)$ is decreased substantially by self-avoidance. In the case of a homogenous network and high proportions of mtDNA network inclusion, this decrease can readily extend below the binomial null model, allowing more faithful than binomial inheritance, as reported in yeast \cite{jajoo2016accurate}. This sub-binomial inheritance requires both an even network distribution and mtDNA self-avoidance, and hence two levels of active cellular control. 
-%% XXX why: (23.03.22 R)
-
-The combination of a homogeneous network with semi-regularly spaced mtDNA molecules within it causes the molecules to evenly spread throughout the cytoplasmic volume of the parent; as a consequence, mtDNA molecules are inherited approximately in proportion to the cytoplasmic volume $p_c$, i.e., $W,M\propto p_c$, \textcolor{red}{i.e., inheritance becomes almost deterministic, albeit there is still variability.} XXX THIS ONLY EXPLAINS HOW IT APPROACHES BINOMIAL, NOT HOW IT GETS LOWER
+Copy number variance $V(N)$ is decreased substantially by self-avoidance (see fig. \ref{fig:sim-model-compare-rep}). In the case of a homogenous network and high proportions of mtDNA network inclusion, this decrease can readily extend below the binomial null model, allowing more faithful than binomial inheritance, as reported in yeast \cite{jajoo2016accurate}. This sub-binomial inheritance requires both an even network distribution and mtDNA self-avoidance, and hence two levels of active cellular control. \textcolor{red}{Combining an evenly distributed network with semi-regularly spaced mtDNA molecules within it causes the molecules to evenly spread throughout the cytoplasmic volume of the parent. Consequencently, mtDNA molecules are inherited approximately in proportion to the cytoplasmic volume $p_c$, i.e., $W,M\propto p_c$, i.e., mtDNA inheritance becomes almost deterministic.}%XXX THIS ONLY EXPLAINS HOW IT APPROACHES BINOMIAL, NOT HOW IT GETS LOWER
 
 The effect of mtDNA self-avoidance on heteroplasmy variance is more complicated. For highly heterogeneous network distributions, heteroplasmy variance follows the same qualitative pattern as for the non-repulsive case, with higher variances achieved when network inclusion discriminates wildtype and mutant types. However, for homogeneous network distributions, the opposite case becomes true. Here, network inclusion discrimination \emph{lowers} the heteroplasmy variance induced by cell divisions. The heteroplasmy variance induced by cell divisions can even be controlled to sub-binomial levels in the case of self-avoidance, strong discrimination, and a homogeneous network distribution.
 
@@ -146,21 +138,19 @@ The effect of mtDNA self-avoidance on heteroplasmy variance is more complicated.
 
 Notably, it is possible for the cell to control copy number variance below the binomial limit while also generating heteroplasmy variance (for example, $n = 64, p = q = 0.3, h = 0.5$ in Fig. \ref{fig:sim-model-compare-rep}, reflecting a potentially beneficial case for implementing a genetic bottleneck without challenging overall mtDNA levels.
 
-Analytic progress is more challenging for this case, but an imperfect statistical model (see Methods) can begin to capture some of the qualitative behaviour, including \textcolor{red}{the direction of change of copy number variance for highly heterogeneous and homogeneous networks, although the model fails also qualitatively for somewhat heterogeneous network structures; the same applies for the structure of the genetic bias. It captures also the qualitative behavior of $V'(h)$ for highly heterogeneous and homogeneous network for strong discrimination, but here to the model fails for somewhat heterogeneous networks, and for unbiased networks.}
-
-\textcolor{red}{XXX. Moved eq. (9)-(11) into SI}
+Analytic progress is more challenging for this case, but an imperfect statistical model (see Methods) can begin to capture some of the qualitative behaviour. \textcolor{red}{Particularly, the model correctly predicts the direction of change of copy number variance for highly heterogeneous and homogeneous networks, although it fails also qualitatively for somewhat heterogeneous network structures; the latter applies also for the structure of the genetic bias in our simulations. It captures also the qualitative behavior of $V'(h)$ for highly heterogeneous and homogeneous network for strong discrimination, but here to the model fails for somewhat heterogeneous networks, and for unbiased networks.}
 
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{symm-50-both-stats-repel.png}
-\caption{\textbf{Genetically biased repulsive reticulated mtDNA distributions induce, and reduce, depending on network spread, cell-to-cell variability in symmetric cell divisions.} Simulated $V'(h)$ (left column) and $V(N)$ (right column) for repulsive reticulated mtDNA distributions under symmetric cell divisions. Rows show different values of initial mutant proportion, with $h=0.1$ in the top row and $h=0.5$ in the bottom row; the three columns to a facet show the different seed numbers, $4, 16$ and $64$, from left to right, respectively. In each panel, statistics for different values of wild and mutant type network inclusion probability $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue, with each $(p,q)$-pair comprising $\mathcal{N}=5000$ symmetric cell divisions.}\label{fig:sim-model-compare-rep}
+\caption{\textbf{Genetically biased repulsive reticulated mtDNA distributions induce, and reduce, depending on network spread, cell-to-cell variability in symmetric cell divisions.} Simulated $V'(h)$ (left column) and $V(N)$ (right column) for repulsive reticulated mtDNA distributions under symmetric cell divisions. Rows show different values of initial mutant proportion, with $h=0.1$ in the top row and $h=0.5$ in the bottom row; the three columns to a facet show the different seed numbers, $4, 16$ and $64$, from left to right, respectively. In each panel, statistics for different values of wild and mutant type network inclusion probability $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue, with each $(p,q)$-pair comprising $\mathcal{N}=10,000$ symmetric cell divisions.}\label{fig:sim-model-compare-rep}
 \end{figure}
 
 
 \subsection{Diffusion of mtDNA relaxes statistics towards their null value}
 The mitochondrial network fragments before cell division. This fragmentation gives a time window during which mtDNAs that were previously constrained by the network structure can diffuse away from their initial position. In the limit of infinite diffusion, network structure will be forgotten and the mtDNA population will be randomly and uniformly distributed throughout the cell, leading to binomial inheritance patterns. We next investigated how limited amounts of diffusion away from the initial structure influence the patterns of mtDNA inheritance.
 
-Fig. \ref{fig:diffusion} shows $v'(h)$ for randomly placement of reticulated mtDNA (left column) and repulsive placement of reticulated mtDNA (right column) for 4, 16, and 64 seed points, respectively, in rows from the top to the bottom. The diffusion strength $\lambda$ is the displacement of individual mtDNA molecules as they undergo a fixed number of bursts of directed motion \citep{moore2021actin}. Our results indicate that directed bursts of motion of the mitochondria indeed work to wash away the effects of the network on daughter cell statistics, resulting in binomial segregation. Notably, there are cases in which extremely heterogeneous mitochondrial networks can leave an imprint on mtDNA inheritance despite high diffusion strength (top row).
+Fig. \ref{fig:diffusion} shows $V'(h)$ for random placement of reticulated mtDNA (left column) and repulsive placement of reticulated mtDNA (right column) for 4, 16, and 64 seed points, respectively, in rows from the top to the bottom. The diffusion strength $\lambda$ is the displacement of individual mtDNA molecules as they undergo a fixed number of bursts of directed motion \citep{moore2021actin}. Our results indicate that directed bursts of motion of the mitochondria indeed work to wash away the effects of the network on daughter cell statistics, resulting in binomial segregation. Notably, there are cases in which extremely heterogeneous mitochondrial networks can leave an imprint on mtDNA inheritance despite high diffusion strength (top row).
 
 \begin{figure}
 \centering
@@ -171,21 +161,20 @@ Fig. \ref{fig:diffusion} shows $v'(h)$ for randomly placement of reticulated mtD
 \section{Discussion}
 Mitochondrial dynamics are known to produce a number of beneficial outcomes for individual cells. Starting with the question of how these processes could influence the segregation of mitochondria, we asked whether these processes also could contribute to the mitochondrial `bottleneck', or segregation of mutant load.
 
-We have demonstrated that mitochondrial network structure can control the variability due to cell divisions in both mtDNA copy number and heteroplasmy inheritance, in both directions. When different mtDNA genotypes have different propensities for network inclusion, random arrangement in a heterogeneous network generates (much) more variability than could be achieved through random cytoplasmic arrangement alone. On the other hand, ordered arrangement in a homogeneous network controls heteroplasmy variance below the binomial level expected from random partitioning. In concert, homogeneous network structure dramatically reduces copy number variance to sub-binomial levels (as observed experimentally in Ref. \cite{jajoo2016accurate}), and heterogeneous network structure corresponding increases it. Notably, it is possible to tightly control copy number while generating heteroplasmy variance -- a strategy that may be useful in implementing a beneficial genetic bottleneck to segregate mtDNA damage.
+We have demonstrated that mitochondrial network structure can control the variability due to cell divisions in both mtDNA copy number and heteroplasmy inheritance, in both directions. When different mtDNA genotypes have different propensities for network inclusion, random arrangement in a heterogeneous network generates (much) more variability than could be achieved through random cytoplasmic arrangement alone. On the other hand, ordered arrangement in a homogeneous network controls heteroplasmy variance below the binomial level expected from random partitioning. In concert, homogeneous network structure dramatically reduces copy number variance to sub-binomial levels (as observed experimentally in Ref. \cite{jajoo2016accurate}), and heterogeneous network structure correspondingly increases it. Notably, it is possible to tightly control copy number while generating heteroplasmy variance -- a strategy that may be useful in implementing a beneficial genetic bottleneck to segregate mtDNA damage.
 
-How do mitochondria in different taxa and tissues correspond to the different regimes in our model? In animals, mitochondrial structure is highly varied, from largely fragmented organelles (low $p$ and $q$ in our model) to highly reticulated networks (high $p$ and/or $q$). mtDNA nucleoids have been found to move freely throughout the mitochondrial reticulum, leading to a random distribution of mtDNA within the network \citep{legros2004organization, sasaki2017live}. Animal mitochondria are expected to fragment prior to cell divisions, with a spectrum of active randomization mechanisms \citep{pangou2021multifaceted, moore2021actin}, captured by the diffusion behaviour in our model. Fungal mitochondria, on the other hand, are often inherited without fragmenting the network, which remains in its reticulated state through cell division \citep{mendoza2020mitochondrial}. \textit{Saccharomyces cerevisiae} populations have been shown to clear heteroplasmy within a few generations, with relatively heterogeneous networks and semi-regular spacing of mtDNA \citep{jakubke2021cristae}, XXX. In plants, mitochondria typically remain fragmented. The intriguing exception to this is the formation of a reticulated network prior to division in the shoot apical meristem -- the tissue that gives rise to the aboveground germline \cite{segui2009mitochondrial}. This formation could be the signature of network structure being employed to shape mtDNA prior to inheritance -- although this employment is also likely to involve facilitating recombination \cite{edwards2021avoiding}. 
+How do mitochondria in different taxa and tissues correspond to the different regimes in our model? In animals, mitochondrial structure is highly varied, from largely fragmented organelles (low $p$ and $q$ in our model) to highly reticulated networks (high $p$ and/or $q$). mtDNA nucleoids have been found to move freely throughout the mitochondrial reticulum, leading to a random distribution of mtDNA within the network \citep{legros2004organization, sasaki2017live}. Animal mitochondria are expected to fragment prior to cell divisions, with a spectrum of active randomization mechanisms \citep{pangou2021multifaceted, moore2021actin}, captured by the diffusion behaviour in our model. Fungal mitochondria, on the other hand, are often inherited without fragmenting the network, which remains in its reticulated state through cell division \citep{mendoza2020mitochondrial}. \textit{Saccharomyces cerevisiae} populations have been shown to clear heteroplasmy within a few generations, with relatively heterogeneous networks and semi-regular spacing of mtDNA \citep{jakubke2021cristae}, \textcolor{red}{XXX suggesting a powerful bottleneck acting on the population. In plants, mitochondria typically remain fragmented. In plants, mitochondria normally exist in a fragmented state (low $p$ and $q$) \citep{logan2010dynamic, chustecki2021network}.} An intriguing exception to this is the formation of a reticulated network prior to division in the shoot apical meristem -- the tissue that gives rise to the aboveground germline \cite{segui2009mitochondrial}. This formation could be the signature of network structure being employed to shape mtDNA prior to inheritance -- although this employment is also likely to involve facilitating recombination \cite{edwards2021avoiding}. 
  
- Our observations on how network structure influences genetic population structure stand in parallel with the many other phenomena associated with the physical and genetic behaviour of mitochondria. Mitochondrial network structure and dynamics likely fulfil many purposes \cite{hoitzing2015function}, including contributing to mtDNA quality control \citep{twig2008mitochondrial, twig2008fission} via facilitating selection. Here, we assume that selection occurs (if at all) between cell divisions, focussing rather on the behaviour at cell divisions. Previous modelling work has demonstrated the capacity of mitochondrial network structure to shape mtDNA genetics through ongoing processes through the cell cycle \cite{aryaman2019mitochondrial, edwards2021avoiding}; other work has considered the behaviour of controlled mtDNA populations across divisions without considering how that control may be physically manifest \cite{johnston2015closed, johnston2016evolution}. We hope that our models here help bridge the gap between these pictures of spatial dynamics between, and well-mixed behaviour at, cell divisions across a range of eukaryotic life.
+Our observations on how network structure influences genetic population structure stand in parallel with the many other phenomena associated with the physical and genetic behaviour of mitochondria. Mitochondrial network structure and dynamics likely fulfil many purposes \cite{hoitzing2015function}, including contributing to mtDNA quality control \citep{twig2008mitochondrial, twig2008fission} via facilitating selection. Here, we assume that selection occurs (if at all) between cell divisions, focussing rather on the behaviour at cell divisions. Previous modelling work has demonstrated the capacity of mitochondrial network structure to shape mtDNA genetics through ongoing processes through the cell cycle \cite{aryaman2019mitochondrial, edwards2021avoiding}; other work has considered the behaviour of controlled mtDNA populations across divisions without considering how that control may be physically manifest \cite{johnston2015closed, johnston2016evolution}. We hope that our models here help bridge the gap between these pictures of spatial dynamics between, and well-mixed behaviour at, cell divisions across a range of eukaryotic life.
  
 \section{Methods}
 \subsection*{Network simulation}
 
-We constructed a random network via an elongation and branching process; network segments elongated deterministically \textcolor{red}{with rate 0.01} XXX WITH WHAT RATE and branched according to Poissonian dynamics with a given rate $\lambda=0.02$ \textcolor{red}{XXX WHAT VALUE}, and terminated if they hit the cell boundary. Network growth was initiated at a number of evenly-spaced seed points that grew initial segments perpendicular to the perimeter of a circular 2D cell, represented by the unit disc, and proceeded until a predetermined network mass had been created; if all segments terminated before this mass was reached, we re-seeded the perimeter, and continued the growth process. By changing the number of seed points from which segments grow, we tune the uniformity of the network structure: a high number of seed points yielded homogeneous network structures, whereas a low number of seed points often lead to heterogeneous network structures (see fig. \ref{fig:main_fig1_plotcell}).
+We constructed a random network via an elongation and branching process; network segments elongated deterministically \textcolor{red}{with rate 0.01} XXX WITH WHAT RATE and branched according to Poissonian dynamics with a given rate $\lambda=0.02$ \textcolor{red}{XXX WHAT VALUE}, and terminated if they hit the cell boundary. Network growth was initiated at a number of evenly-spaced seed points that grew initial segments perpendicular to the perimeter of a circular 2D cell, represented by the unit disc, and proceeded until a predetermined network mass had been created; if all segments terminated before this mass was reached, we re-seeded the perimeter, and continued the growth process. By changing the number of seed points from which segments grow, we tune the uniformity of the network structure: a high number of seed points yielded homogeneous network structures, whereas a low number of seed points often lead to heterogeneous network structures (see fig. \ref{fig:plotcell}).
 
 Next, we distributed mtDNAs in the cell. We considered two mtDNA types, wildtype $W$ and mutant type $M$, each a predetermined proportion of the mtDNA population, as specified by $h$. Proportions $p$ of wild type mtDNA and $q$ of mutant type mtDNA molecules were then placed within the network according to a particular placement rule (see below). The remaining mtDNA molecules were randomly and uniformly distributed in the cell, modelling presence of fragmented organelles in the cytoplasm. First, we considered random and uniform placement of mtDNA within the network, which we later restricted to maintain a minimal inter-mtDNA distance within the network (hence where mtDNA molecules are assumed to repel each other).
 
-Finally, we partition the cell. The process of cell division by a division plane was modelled by bisecting the disc with a horizontal line at $y=y_0$, $y\in[0,1]$. We record the number of wildtype $W$ and mutant $M$ mtDNAs is one daughter, as well as the heteroplasmy $h = m/(w+m)$. We are particularly interested in the heteroplasmy variance $V(h)$ and copy number variance $V(N)$, where $N=W+M$, across many realisations of this system.  
-
+Finally, we partition the cell and record the number of wildtype $W$ and mutant $M$ mtDNAs is one daughter, the heteroplasmy $h = m/(w+m)$, as well as the proportion of network mass $u$. The process of cell division was modelled by counting only the network mass and mtDNA content of a circular segment defined by the angle $\phi$.  We are particularly interested in the heteroplasmy variance $V(h)$ and copy number variance $V(N)$, where $N=W+M$, across many realisations of this system.  
 
 \subsection*{Statistical models of mtDNA copy number and heteroplasmy}
 We consider $h = \frac{M}{W+M}$ and $N=W+M$ as our key variables. We assume that the parent cell's heteroplasmy level is $h\in [0,1]$, with a total of $N_0$ mtDNA molecules. Thus there are $hN_0$ mutant molecules, and $(1-h)N_0$ wild type molecules of mtDNA. 
@@ -201,32 +190,32 @@ Here $V(W)$ and $V(M)$ are the variances of wild-type and mutant mtDNA, respecti
 \end{equation}
 
 with mean $E(h)$ and variance $V(h) = E(h^2) - E(h)^2$, or a first-order Taylor expansion, finding that
-\begin{equation}\label{eq:V1hGen}
+\begin{equation}\label{eq:v1h-gen}
 V_1(h) = h_M'^2V(M)+h_W'^2V(W)+2h_M'h_W'\mathrm{Cov}(W,M)
 \end{equation}
 The prefactors $h_M'$ and $h_W'$ are derivatives of the heteroplasmy level considered as a function of $W$ and $M$, and are model dependent (described below). Dividing $V_1(h)$ by $h(1-h)$, we get the normalized heteroplasmy variance, $V_1'(h)$, which conveniently removes the dependence on $h$.
 
 \subsubsection*{The null hypothesis: no mtDNA placement in network}
 As our null hypothesis, we considered a binomial segregation model for mtDNA \citep{johnston2019varied}. In this model, no network structure exists and no active mechanisms contribute to the distributions of mtDNA (of either type) to the daughter cell. Supposing that the cell divides such that the daughter consists of a proportion $p_c$ of the parent cell volume, we supposed
-\be\label{eq:null-hyp}
+\be\label{eq:model-null}
 M\sim \mathrm{Bin}(hN_0,p_c) \text{ and } W\sim\mathrm{Bin}((1-h)N_0,p_c)
 \ee
 The copy number variance of the daughter is then, from the binomial distribution,
-\begin{equation}\label{eq:mtCN_null}
+\begin{equation}\label{eq:vn-null}
     V(N)=p_c(1-p_c)N_0
 \end{equation}
-To find the heteroplasmy level variance, we calculated the variances of $W$ and $M$, and the corresponding derivatives in eqn's (\ref{eq:null-hM.prime}, \ref{eq:null-hW.prime}); the covariance of $W$ and $M$ is zero in this case. A detailed derivation of $V_1(h)$ is presented in appendix \ref{app:derivations}, the result of which were
-\begin{equation}\label{eq:NullHyp}
+To find the heteroplasmy level variance, we calculated the variances of $W$ and $M$, and the corresponding derivatives in eqn's (\ref{eq:null-hW.prime}, \ref{eq:null-hM.prime}); the covariance of $W$ and $M$ is zero in this case. A detailed derivation of $V_1(h)$ is presented in appendix \ref{app:derivations}, the result of which were
+\begin{equation}\label{eq:vh-null}
 V'(h)=\frac{1-p_c}{p_c} \frac{1}{N_0}
 \end{equation}
-This was our null hypothesis, that nothing influences the placement of mtDNAs within the cell, making the process completely binomial. The familiar expression of $1/N_0$ is recapitulated for symmetric cell divisions, i.e., with $p_c=1/2$, in which case $V'(h)=1/N_0$. Throughout this paper, we consistently compared our findings to this value $1/N_0$.
+This is our null case, that nothing influences the placement of mtDNAs within the cell. If this is the case, apportioning of mtDNA to daughter cells is binomial. The familiar expression of $1/N_0$ is recapitulated for symmetric cell divisions, i.e., with $p_c=1/2$, in which case $V'(h)=1/N_0$.
 
 \subsubsection*{Random mtDNA placement in network}
 We proceed by considering placing some proportions $p$ and $q$ of the wildtype and mutant populations respectively into the network. Following intuition and preliminary observation of our simulations, we model the proportion $U$ of network mass inherited by the smaller daughter as Beta distributed with mean $E(U)$ and variance $V(U)$. Expected network inheritance $E(U)$ will simply be $p_c$, the proportion of cell volume inherited; $V(U)$ will depend on the spread of the network through the cell, and constitutes a fit parameter in comparing this statistical model to simulation. Hence $U$ is drawn from the beta distribution, $\mathrm{Beta}(\alpha,\beta)$ with mean $E(U) = \alpha/(\alpha+\beta) = p_c$ and variance $V(U) = \frac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}$.
 
 We now write $W_n, W_c$ respectively for the number of wildtype mtDNAs placed in the network and randomly spread in the cytoplasm, and $M_n, M_c$ likewise for mutant mtDNA. $W_c$ and $M_c$ are assumed to follow the binomial partitioning dynamics above. At first assuming that mtDNAs in the network are randomly positioned therein, we have
 
-\be\label{eq:model-no-repel}
+\be\label{eq:methods-model}
     \begin{split}
         & W_n \sim \mathrm{Bin}\left(w_n,u\right) \\
         & W_c \sim \mathrm{Bin}\left(w_c,p_c\right) \\
@@ -236,7 +225,7 @@ We now write $W_n, W_c$ respectively for the number of wildtype mtDNAs placed in
 \ee
 where $w_n = p(1-h)N_0, w_c = (1-p)(1-h)N_0, m_n = qhN_0, m_c = (1-q)hN_0$.
 
-The mean and variance of $N$ are readily derived using the laws of iterated expectation and total variance to account for the compound distribution of reticulated mtDNA (Appendix). To estimate heteroplasmy variance, we combine the (co)variances of the different types with their respective prefactor (from eqns. (\ref{eq:net-hM.prime}, \ref{eq:net-hW.prime}) in appendix \ref{app:taylor}).
+The mean and variance of $N$ are readily derived using the laws of iterated expectation and total variance to account for the compound distribution of reticulated mtDNA (Appendix). To estimate heteroplasmy variance, we combine the (co)variances of the different types with their respective prefactor (from eqns. (\ref{eq:net-hW.prime}, \ref{eq:net-hM.prime}) in appendix \ref{app:taylor}).
 
 \subsubsection*{Repulsive mtDNA placement in network}
 Next, we considered the case where mtDNAs placed in the network are not randomly positioned, but instead experience a repulsive interaction, and thus adopt a more even spacing. Capturing this picture perfectly with a statistical model is challenging; instead, we use the following picture. The proportion of inherited network mass $U$ consists of a finite number of `spaces', each of which can be occupied by at most one mtDNA molecule. Choose a number of spaces to fill, then sample mtDNA molecules from the available pool without replacement, assigning each drawn mtDNA to the next unoccupied network space. In this case, the final population of mtDNAs in the network is described by the hypergeometric distribution:
@@ -249,7 +238,7 @@ Next, we considered the case where mtDNAs placed in the network are not randomly
     \end{split}
 \ee
 
-We can once again use the laws of total variance and iterated expectation  (see appendix \ref{eq:app-V1h-general}) to estimate heteroplasmy and copy number behaviour.
+We can once again use the laws of total variance and iterated expectation  (see appendix \ref{eq:app-v1h-general}) to estimate heteroplasmy and copy number behaviour.
 
 \bibliography{refs.bib}
 
@@ -261,11 +250,11 @@ We can once again use the laws of total variance and iterated expectation  (see 
  We consider four state variables describing the mtDNA population of a daughter cell after a mother divides: $W_n, W_c, M_n, M_c$, for the wildtype ($W$) and mutant ($M$) mtDNAs contained in a reticulated mitochondrial network (${}_n$) or in fragmented mitochondrial elements in the cytoplasmy (${}_c$). An additional variable $U$ describes the proportion of network mass inherited by the daughter cell.
 
 The mother cell has $N_0$ mtDNAs, a proportion $h$ of which are mutants ($h$ is heteroplasmy). Proportions $p$ and $q$ of the wildtype and mutant mtDNAs are contained in the network; the remainder are in fragments in the cytoplasm. 
-We consider a daughter inheriting a proportion $p_c$ of the cytoplasm. The mtDNA copy number of the daughter, $N = W_n+W_c+M_n+M_c$, is the sum of all components. We write $W = W_n + W_c$ and $M = M_n+M_c$. Under the null hypothesis of no network, since $M\sim \mathrm{Bin}(hN_0,p_c)$ and $W\sim\mathrm{Bin}((1-h)N_0,p_c)$, we have $N ~ Bin(N_0, p_c)$ and 
-\begin{equation}\label{eq:app_mtCN_null}
+We consider a daughter inheriting a proportion $p_c$ of the cytoplasm. The mtDNA copy number of the daughter, $N = W_n+W_c+M_n+M_c$, is the sum of all components. We write $W = W_n + W_c$ and $M = M_n+M_c$. Under the null hypothesis of no network, since $M\sim \mathrm{Bin}(hN_0,p_c)$ and $W\sim\mathrm{Bin}((1-h)N_0,p_c)$, we have $N \sim \mathrm{Bin}(N_0, p_c)$ and 
+\begin{equation}\label{eq:app-vn-null}
     V(N)=p_c(1-p_c)N_0
 \end{equation}
-For the random mtDNA distribution model, using the full model (\ref{eq:model-no-repel}), and decomposing into the networked and individual mitochondria, i.e., $N=N_c+N_n$, the law of total variance gives
+For the random mtDNA distribution model, using the full model (\ref{eq:model}), and decomposing into the networked and individual mitochondria, i.e., $N=N_c+N_n$, the law of total variance gives
 \begin{equation}
     \begin{split}
     V(N)&=V(N_c)+V(N_n)\\
@@ -275,32 +264,32 @@ For the random mtDNA distribution model, using the full model (\ref{eq:model-no-
          &=p_c(1-p_c)N_0+\kappa N_0(\kappa N_0-1)V(U)
     \end{split}
 \end{equation}
-For our model for repulsive mtDNA distribution model the corresponding expressions are
+Overall, this expression captures copy number variance dynamics across a wide range of parameterisations (see fig. \ref{fig:app-sim-theory}). For our model for repulsive mtDNA distribution model (\ref{eq:model-repel}) the corresponding expressions are
 \begin{equation}
     \begin{split}
     V(N)&=V(W)+V(M)+2\mathrm{Cov}(W,M)\\
-         &=\left((1-\kappa)-2p_f^{-1}\frac{pqN_0}{\kappa N_0-1}\right)N_0p_c(1-p_c)
-         +\left(\kappa^2-2p_f^{-1}\frac{pq}{\kappa N_0-1}\right)N_0^2V(U)
+         &=\left((1-\kappa)-2h(1-h)\frac{pqN_0}{\kappa N_0-1}\right)N_0p_c(1-p_c)
+         +\left(\kappa^2-2h(1-h)\frac{pq}{\kappa N_0-1}\right)N_0^2V(U)
     \end{split}
 \end{equation}
-where $\kappa = p(1-h)+qh$, and $p_f=1/(h(1-h))$. 
+where $\kappa = p(1-h)+qh$. The expression correctly predicts sub-binomial variance for heterogeneous networks, but fails to capture the structure of genetic bias as well as other qualitative dynamics of the system (see fig. \ref{fig:app-sim-theory-repel}).
 
-\section{Heteroplasmy level variance}\label{app:taylor}
+\section{Heteroplasmy level variance}\label{app:vh-est}
 The heteroplasmy level is the mutant proportion of the cell, i.e.,
 \begin{equation*}
     h=\frac{M}{W+M}
 \end{equation*}
 where $W$ and $M$ are the numbers of wild-type and mutant type mtDNA, respectively. By definition,
-\begin{equation*}
+\begin{equation*}\label{eq:app-vhest}
     V(h)=\mathrm{E}\left[(h-\mathrm{E}[h])^2\right]
 \end{equation*}
-and $h=h(M,W)$. As the ratio of random variables, $h$ does not admit as straightforward an analysis as $N$. Using the moment expressions in the main text we can compute its value (and $V(N)$) for a given system (Fig. \label{fig:vhestimate-symm}) XXX BROKEN LINK, but we sought a more intuitive analysis.
+and $h=h(M,W)$. As the ratio of random variables, $h$ does not admit as straightforward an analysis as $N$. Using the moment expression (eq. \ref{eq:vh-estimate-moments}) in the main text we can compute its value (and $V(N)$) for a given system. \textcolor{red}{While these expressions provide an excellent match with simulations for a wide range of parameterisations (see fig. \ref{fig:vhestimate-symm} and \ref{fig:sim-model-compare-10}), they do not allow intuitive understanding of the system. Since we sought a more intuitive analysis, we employ first- and second-order Taylor expansions to understand first- and second-order effects.}%XXX BROKEN LINK, but we sought a more intuitive analysis.
 
 
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{symm-50-fig-sim-vhest.png}
-\caption{\textbf{The statistical model captures the structure of genetic bias and clustering effect along the diagonal for symmetric cell divisions.} Simulated $V(h)$ (upper left facet) and $V(N)$ (upper right facet) for random reticulated mtDNA distributions and predicted $V(h)$ (lower left facet) and $V(N)$ (lower right facet) under symmetric cell divisions. Rows show different values of initial mutant proportion, with $h=0.1$ in the top row of facets and $h=0.5$ in the bottom row; columns show the different seed numbers, $4, 16$ and $64$, from left to right, respectively, in the top facets; the lower panels they show the parameter $\alpha(=\beta)$ of the Beta distribution, each of which are fitted to the simulated network distributions for the different seed numbers. A larger $\alpha$ corresponds to a more homogeneous network. In each panel, statistics for different values of wild and mutant type network inclusion probability $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue.}\label{fig:vhestimate-symm}
+\caption{\textbf{The statistical model captures the structure of genetic bias and clustering effect along the diagonal for symmetric cell divisions.} Simulated $V'(h)$ (upper left facet) and $V(N)$ (upper right facet) for random reticulated mtDNA distributions and predicted $V'(h)$ (lower left facet) and $V(N)$ (lower right facet) under symmetric cell divisions. Rows show different values of initial mutant proportion, with $h=0.1$ in the top row of facets and $h=0.5$ in the bottom row; columns show the different seed numbers, $4, 16$ and $64$, from left to right, respectively. In each panel, statistics for different values of wild and mutant type network inclusion probability $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue. Each $(p,q)$-pair comprises $\mathcal{N}=10,000$ asymmetric cell divisions. The daughter of interest inherits 50\% of the parent cytoplasm.}\label{fig:app-vhestimate-symm}
 \end{figure}
 
 \subsection{Taylor expansions for heteroplasmy level variance}\label{app:taylor}
@@ -316,7 +305,7 @@ Using a first-order Taylor expansion (as in, for example, Ref. \cite{johnston201
    \end{split}
 \end{equation*}
 This approximation is used to derive the variance of the heteroplasmy level in all the scenarios considered, so we give it an subscript of $1$ to show it is a first-order Taylor expansion.
-\begin{equation}\label{eq:app-V1h-general}
+\begin{equation}\label{eq:app-v1h-general}
     V_1(h)\approx h_M'^2V(M) +
 h_W'^2V(W)+2h_W'h_M'\mathrm{Cov}(M,W)
 \end{equation}
@@ -357,18 +346,17 @@ Under the null hypothesis
         = & \left(\frac{h(1-h)}{p_cN_0}\right)(1-p_c)
     \end{split}
 \end{equation*}
-which, weighted by $h(1-h)$, is equation \ref{eq:NullHyp}, i.e., the normalized heteroplasmy variance defined as
-\begin{equation}\label{eq:app-1-null-hypothesis-vh}
+which, weighted by $h(1-h)$, is equation \ref{eq:vh-null}, i.e., the normalized heteroplasmy variance defined as
+\begin{equation}\label{eq:app-vh-null}
 V'(h)=\frac{V_1(h)}{h(1-h)}=\frac{1-p_c}{p_c}\frac{1}{N_0}
 \end{equation}
-
 
 
 \subsubsection*{Non-repulsive model}
 XXX IGJ CONFUSED HERE
 
-\textcolor{red}{Attempting to derive sensible models for real cellular distributions due to reticulation, we first explored a model of reticulated mtDNA in which mtDNA molecules were uniformly distributed throughout the network, which we term a random reticulated mtDNA distribution. Recall} that all random variables are binomially distributed with their respective proportion of the total mtDNA content of the parent as the population, with $p_c$ or $u$ as the probability. Using the law of total variance for $M$ and $W$, we find that
-\begin{equation}\label{eq:VarM_NetStoch}
+\textcolor{red}{We first explored a model of reticulated mtDNA in which mtDNA molecules are randomly distributed throughout the network, which we term a random reticulated mtDNA distribution. Recall} that all random variables are binomially distributed with their respective proportion of the total mtDNA content of the parent as the population, with $p_c$ or $u$ as the probability. Using the law of total variance for $M$ and $W$, we find that
+\begin{equation}\label{eq:app-vm-net}
     \begin{split}
    V(M) & = E[V(M_n|u)]+V(E[M_n|u])+V(M_c)\\
         & = E[m_nu(1-u)]+V(m_nu)+V(M_c)\\
@@ -377,7 +365,7 @@ XXX IGJ CONFUSED HERE
     \end{split}
 \end{equation}
 and
-\begin{equation}\label{eq:VarW_NetStoch}
+\begin{equation}\label{eq:app-vw-net}
     \begin{split}
    V(W) & = E[V(W_n|u)]+V(E[W_n|u])+V(W_c)\\
         & = E[w_nu(1-u)]+V(w_nu)+V(W_c)\\
@@ -386,7 +374,7 @@ and
     \end{split}
 \end{equation}
 Using the law of total covariance, we find that the covariance of $M$ with $W$ is
-\begin{equation}\label{eq:CovMW_NetStoch}
+\begin{equation}\label{eq:app-cmw-net}
     \begin{split}
   \mathrm{Cov}(M,W) & = \mathrm{Cov}(M_n,W_n) \\
     & = E[\mathrm{Cov}(M_n,W_n|u)]+\mathrm{Cov}(E[M_n|u],E[W_n|u])\\ 
@@ -395,8 +383,8 @@ Using the law of total covariance, we find that the covariance of $M$ with $W$ i
     & = w_nm_nV(U)
     \end{split}
 \end{equation}
-Combining these with the prefactors of eqn's (\ref{eq:net-hM.prime},\ref{eq:net-hW.prime}), eq. (\ref{eq:V1hGen}) gives
-\begin{equation}\label{eq:var-h-net-no-repel}
+Combining these with the prefactors of eqn's (\ref{eq:net-hM.prime},\ref{eq:net-hW.prime}), eq. (\ref{eq:v1h-gen}) gives
+\begin{equation}
     \begin{split}
     V_1(h)= &\left(\frac{m_nE[U]+m_cp_c}{(E[U](w_n+m_n)+p_c(w_c+m_c))^2}\right)^2
        \left(w_nE[U](1-E[U])+w_cp_c(1-p_c)+w_n(w_n-1)V(U)\right)\\
@@ -405,28 +393,43 @@ Combining these with the prefactors of eqn's (\ref{eq:net-hM.prime},\ref{eq:net-
       -&2\left(\frac{m_nE[U]+m_cp_c}{(E[U](w_n+m_n)+p_c(w_c+m_c))^2}\right)\left(\frac{w_nE[U]+w_cp_c}{(E[U](w_n+m_n)+p_c(w_c+m_c))^2}\right)w_nm_nV(U)
     \end{split}
 \end{equation}
-Once again, we divide by $h(1-h)$ to give $V_1'(h)$, which we plot for different values of $p$, $q$, $p_c$, and network parameters, $E[U]$ and $V(U)$, which are used to fit a beta distribution with parameters $\alpha$ and $\beta$, with which we model the process of mtDNA distribution when a cell divides. Assuming that $E[U]=p_c$ and simplifying the equation further, we found an expression for $V_1(h)$, i.e., eq. (\ref{eq:v1h-net-repel}).
-Assuming symmetric cell division, $p_c=1/2$, and that $p=q-\delta$ -- $\delta$ being a measure of genetic bias -- for which $\kappa = p(1+\delta)$, we find that
+If we assume that $E[U]=p_c$, for which $w_n+w_c=(1-h)N_0$ and $m_n+m_c=hN_0$, we get a simpler expression,
 \begin{equation}
     \begin{split}
-      V_1(h) & = 4V(U)\left(p_f^{-2}\delta^2-p_f^{-1}\frac{p(p-\delta)}{p(1+\delta)N_0-1}((1-h)^2+h^2)\right)\\
-      & + p_f^{-1}\frac{1}{N_0}\left(1-p+\delta(1-h)\right)\\
-      & + p_f^{-1}\frac{p(p-\delta)}{p(1+\delta)N_0-1}\left((1-h)^2+h^2\right)
+    V_1(h)= &\left(\frac{h}{p_cN_0}\right)^2
+       \left((1-h)N_0p_c(1-p_c)+w_n(w_n-1)V(U)\right)\\
+      +&\left(\frac{(1-h)}{p_cN_0}\right)^2
+       (hN_0p_c(1-p_c)+m_n(m_n-1)V(U))\\
+      -&2\left(\frac{h}{p_cN_0}\right)\left(\frac{(1-h)}{p_cN_0}\right)w_nm_nV(U)
     \end{split}
 \end{equation}
-In the limit of $\delta\rightarrow 0$, i.e., no genetic bias, we find that
+Simplifying a bit, and gathering terms, we find that
 \begin{equation}
-    \begin{split}
-      V_1(h) & = 4V(U)\left(-p_f^{-1}\frac{p^2}{pN_0-1}((1-h)^2+h^2)\right)\\
-      & + p_f^{-1}\frac{1}{N_0}\left(1-p\right)\\
-      & + p_f^{-1}\frac{p^2}{pN_0-1}\left((1-h)^2+h^2\right)
-    \end{split}
+    V_1(h)= &\left(\frac{h(1-h)}{p_c^2N_0}\right)p_c(1-p_c)+\left(\frac{V(u)}{p_c^2N_0}\right)h^2(1-h)^2(p-q)+\left(\frac{V(U)}{p_cN_0}\right)h(1-h)(ph+q(1-h))
 \end{equation}
-Finally, dividing by $h(1-h)$, or $p_f^{-1}$, supposing that $pN_0-1\approx pN_0$, and simplifying, we find
+Dividing by $h(1-h)$ gives $V_1'(h)$,
+\begin{equation}\label{eq:app-v1h-net}
+V'_1(h) = \frac{1-p_c}{p_cN_0}
+        +\frac{h(1-h)}{p_c^2}(p-q)^2V(U)
+        -\frac{V(U)}{p_c^2N_0}(ph+q(1-h))
+\end{equation}
+which we plot for different values of $p$, $q$, $p_c$, and network parameters, $E[U]$ and $V(U)$, which are used to fit a beta distribution with parameters $\alpha$ and $\beta$, with which we model the process of mtDNA distribution when a cell divides. Setting $p_c=1/2$ gives eq. (\ref{eq:v1h-net}).
+
+Looking to gain insights from eq. \ref{eq:app-v1h-net}, we write $p = q-\delta$. In this case, supposing that $\delta$ is small, wild-type and mutant mtDNA are treated almost equally by the network, with an almost equal proportion of the two admitted into the network.
+
 \begin{equation}
-      V_1'(h) = \frac{1}{N_0}\left(1-2ph(1-h)-4V(U)p((1-h)^2+h^2)\right)
+V'_1(h) = \frac{1-p_c}{p_c N_0}
+        +\frac{h(1-h)}{p_c^2}\delta^2V(U)
+        -\frac{V(U)}{p_c^2N_0}(p+\delta (1-h))
 \end{equation}
-Here we see that we regain binomial segregation if $p=0$. As $p$ increases to $1$, the proportion of mtDNAs subject to binomial inheritance is reduced linearly, and network effects arise, with the network contents reducing heteroplasmy variance with increasing $p$.
+It will be seen that there is a quadratic dependence on $\delta$, the difference in inclusion probabilities for the different types of mtDNA. For $\delta\neq 0$, the network is genetically biased towards one of the types, to which there is associated an increase in $V'(h)$. For $\delta=0$, the network is unbiased, giving
+\begin{equation}\label{eq:app-v1h-net-unbiased}
+V'_1(h) = \frac{1-p_c}{p_c N_0}
+        -\frac{V(U)}{p_c^2N_0}p
+\end{equation}
+When $p_c=1/2$, i.e., when cell division is symmetric, we arrive at eq. \ref{eq:v1h-net} in the main text. Eq. \ref{eq:app-v1h-net-unbiased} suggests that the network structure provides a negative contribution to $V'(h)$, resulting in the blue streak in the first order Taylor expansion of $V'(h)$, whereas, from the simulations, we expected a small \textit{increase} along the diagonal (shown in fig. (\ref{fig:sim-model-compare}). The second order Taylor expansion corrects this (shown in fig. \ref{fig:app-vh-stats}), with contributions of third order and higher in p and q (eq. \ref{eq:app-v2h-net}), but it overcompensates; we do not pursue higher order terms, mostly because they are hard to interpret, and present significant difficulties in calculations. We then asked whether statistical simulations would produce a better fit, and we find that there is good support for this model when mtDNA molecules are randomly distributed throughout the network in our simulations (figs. \ref{fig:app-sim-theory} and \ref{fig:app-vhestimate-symm}).
+
+Note that the prefactor $(\frac{1-p_c}{p_c}-\frac{pV(U)}{p_c^2})$ is positive for all parameterizations considered. Indeed, a variance $V(U)\geq 1/4$ cannot be admitted by a Beta distribution with $\alpha,\beta\neq 0$. If $\alpha>>\beta$, the mean is almost 1, and the variance is close to zero because it is also multiplied by a factor of the order $\beta/\alpha$. On the other hand, if $\alpha<<\beta$, the mean is itself very small. Lastly, if $\alpha=\beta$, the mean is $1/2$, and the variance is inversely proportional to $4\cdot(2\alpha+1)>4$, i.e., a variance $V(U)<1/4$, since $\alpha>0$. Only in the limit $\alpha=\beta=0$, equality is achieved, under the rather artificial parameterization with $\alpha =\beta = 0$ \citep{johnson1995continuous}. To contrast with our simulations, the largest variance we acquired was $.023$, about a tenth of the approach to this limit, with 4 seed points and $p_c=0.5$. For larger seed numbers, and smaller proportions, the network variance decreases.
 
 \subsubsection*{Repulsive model}
 \textcolor{red}{Next we considered networks in which mtDNA molecules within the network were mutually repulsed by each other, to the effect of setting a minimum inter-mtDNA distance for reticulated mtDNA molecules. We term this model a repulsive reticulated mtDNA distribution. To derive a model, we again decomposed} $W$ and $M$ into their cytoplasmic and network components, i.e.,
@@ -436,7 +439,7 @@ Here we see that we regain binomial segregation if $p=0$. As $p$ increases to $1
         & M = M_n + M_c
     \end{split}
 \end{equation*}
-\textcolor{red}{We assumed a model of mtDNA transmission from a parent to its smaller daughter in which we consider the network to be divided into $\lfloor u/l \rfloor$ different compartments. Into each of these compartments a single mtDNA molecule may be placed. Here $l$ is the minimum inter-mtDNA distance assumed due to the repulsion of mtDNA molecules. The model thus corresponds to a statistical model in which we make a hypergeometric selection ($\lfloor u/l \rfloor$) on the number of mtDNA molecules in the network ($w_n+m_n$) to approximate the number of wild type mtDNA molecules, and subtract this from the total number of reticulated mtDNA molecules to get the mutant type mtDNA molecules. The cytoplasmic contents are still binomially inherited. In mathematical terms, we have}
+\textcolor{red}{To assess the effect of mutual self-repulsion of mtDNA, we assumed a model of mtDNA transmission from a parent to its smaller daughter in which we consider the network to be divided into $\lfloor u/l \rfloor$ different compartments. Into each of these compartments a single mtDNA molecule may be placed. Hence $l$ is the minimum inter-mtDNA distance assumed due to the repulsion of mtDNA molecules. The model thus corresponds to a statistical model in which we make a hypergeometric selection ($\lfloor u/l \rfloor$) on the number of mtDNA molecules in the network ($w_n+m_n$) to approximate the number of wild type mtDNA molecules, and subtract this from the total number of reticulated mtDNA molecules to get the mutant type mtDNA molecules. The cytoplasmic contents are still binomially inherited. In mathematical terms, we have}
 \be\label{eq:app-model-repel}
     \begin{split}
         & W_n \sim \mathrm{Hypergeometric}(w_n+m_n,w_n,\lfloor u/l \rfloor) \\
@@ -453,7 +456,7 @@ where $u\sim\mathrm{Beta}(\alpha,\beta)$. The variance of $W_n$ is (XXX WHERE DO
     =&\frac{w_nm_n}{l^2(w_n+m_n)^2}\frac{1}{w_n+m_n-1}\{(w_n+m_n)lE[U]-E[U^2]\}+\frac{w_n^2}{l^2(w_n+m_n)^2}V(U)
     \end{split}
 \end{equation*}
-Although $l$ is a constant $l=0.01$ in our simulations, in our model, we set $l=(w_n+m_n)^{-1}$, so that the network is partitioned to accommodate all mtDNA molecules that need to go in it. That is, only for $w_n+m_n=n=$ do we partition the model network into as many compartments as there are in the simulated networks, a considerable deviation from the simulation, depending on the model parameterisation in question. With this, we find}
+Although $l=0.01$ is a constant in our simulations, in our model, we set $l=(w_n+m_n)^{-1}$, so that the network is partitioned to accommodate all mtDNA molecules that need to go in it. That is, only for $w_n+m_n=N_0$ do we partition the model network into as many compartments as there are in the simulated networks, a considerable deviation from the simulation, depending on the model parameterisation in question. With this, we find}
 \begin{equation}
     V(W_n) = w_n^2V(U)+\frac{w_nm_n}{w_n+m_n-1}(E[U]-E[U^2])
 \end{equation}
@@ -466,18 +469,18 @@ Using the law of total covariance,
 \begin{split}
     \mathrm{Cov}(\lfloor U/l \rfloor,W_n)
     &=\frac{1}{l}\left(E[\mathrm{Cov}(U,W_n|U)]+\mathrm{Cov}(E[U|U],E[W_n|U])\right)\\
-    &=\frac{w_n}{l^2(w_n+m_n)}\left(0+\frac{1}{l}\mathrm{Cov}(U,U)\right)
+    &=\frac{w_n}{l(w_n+m_n)}\left(0+\frac{1}{l}\mathrm{Cov}(U,U)\right)
 \end{split}
 \end{equation*}
-Once again setting $l=(w_n+m_n)^{-1}$, we find
-\begin{equation}\label{eq:var-m-net-repel-temp}
+Setting $l=(w_n+m_n)^{-1}$, we find
+\begin{equation}
     V(M_n) = (w_n+m_n)^2V(U)+V(W_n)-2(w_n+m_n)w_nV(U)
 \end{equation}
 respectively. Combining with the variances of the cytoplasmic mtDNA content, we find that
-\begin{equation}\label{eq: app-var-m-repel}
+\begin{equation}\label{eq:app-vm-repel}
 V(M) = m_n^2V(U)+\frac{w_nm_n}{w_n+m_n-1}(E[U]-E[U^2])+p_c(1-p_c)m_c
 \end{equation}
-\begin{equation}\label{app:unif_varW}
+\begin{equation}\label{eq:app-vw-repel}
 V(W) = w_n^2V(U)+\frac{w_nm_n}{w_n+m_n-1}(E[U]-E[U^2])+p_c(1-p_c)w_c.
 \end{equation}
 $W_n$ has non-zero covariance with $M_n$, due to their mutual dependence on network structure, but no cytoplasmic component covaries with any other component. The overall mutant-wildtype covariance is therefore
@@ -493,108 +496,67 @@ In this case, $V_1(h)$, the first-order Taylor expansion of heteroplasmy varianc
 \begin{equation}
     \begin{split}
       V_1(h)= &\left(\frac{m_nE[U]+m_cp_c}{(E[U](w_n+m_n)+p_c(w_c+m_c))^2}\right)^2
-       \left(\frac{w_nm_n}{w_n+m_n-1}(E[U]-E[U^2])+w_n^2V(U)+p_c(1-p_c)w_c\right)\\
+       \left(w_n^2V(U)+\frac{w_nm_n}{w_n+m_n-1}(E[U]-E[U^2])+p_c(1-p_c)w_c\right)\\
       +&\left(\frac{w_nE[U]+w_cp_c}{(E[U](w_n+m_n)+p_c(w_c+m_c))^2}\right)^2
-       ((w_n+m_n)^2V(U)+V(W_n)-2(w_n+m_n)w_nV(U)+p_c(1-p_c)m_c)\\
+       (m_n^2V(U)+\frac{w_nm_n}{w_n+m_n-1}(E[U]-E[U^2])+p_c(1-p_c)m_c)\\
       -&2\left(\frac{m_nE[U]+m_cp_c}{(E[U](w_n+m_n)+p_c(w_c+m_c))^2}\right)\left(\frac{w_nE[U]+w_cp_c}{(E[U](w_n+m_n)+p_c(w_c+m_c))^2}\right)w_nm_nV(U)
     \end{split}
 \end{equation}
-which we normalise by $h(1-h)$ to get $V_1'(h)$, which we plot for different values of $p$, $q$, $p_c$, given network parameters $E[U]$ and $V(U)$, which are used to fit a beta distribution with parameters $\alpha$ and $\beta$, with which we model the process of mtDNA distribution when a cell divides.
-If we assume that the network is evenly spread throughout the cell, $E[U]=p_c$, the equations are simplified greatly. Gathering terms, we find
+Assuming $E[u]=p_c$, we find that
 \begin{equation}
     \begin{split}
-      V_1'(h) & = \frac{V(U)}{p_c^2}\left(p_f^{-1}(p-q)^2-\frac{pq}{\kappa N_0-1}((1-h)^2+h^2)\right)\\
+      V_1(h)= &\left(\frac{h}{p_cN_0}\right)^2
+       \left(w_n^2V(U)+\frac{w_nm_n}{w_n+m_n-1}(E[U]-E[U^2])+p_c(1-p_c)w_c\right)\\
+      +&\left(\frac{(1-h)}{p_cN_0}\right)^2
+       (m_n^2V(U)+\frac{w_nm_n}{w_n+m_n-1}(E[U]-E[U^2])+p_c(1-p_c)m_c)\\
+      -&2\left(\frac{h}{p_cN_0}\right)\left(\frac{(1-h)}{p_cN_0}\right)w_nm_nV(U)
+    \end{split}
+\end{equation}
+Gathering some terms and dividing by $h(1-h)$, we find
+\begin{equation}\label{eq:v1h-net-repel}
+    \begin{split}
+      V_1'(h) & = \frac{V(U)}{p_c^2}\left(h(1-h)(p-q)^2-\frac{pq}{\kappa N_0-1}((1-h)^2+h^2)\right)\\
       & + \frac{1-p_c}{p_c N_0}\left(h(1-p)+(1-h)(1-q)\right)\\
       & + \frac{1-p_c}{p_c}\frac{pq}{\kappa N_0-1}\left((1-h)^2+h^2\right)
     \end{split}
 \end{equation}
-where $p_f=(h(1-h))^{-1}$ and $\kappa = p(1-h)+qh$.
-
-Fig. \ref{fig:symm-50-both-stats-repel-taylor}
+where $\kappa = p(1-h)+qh$.
+We then plot $V_1'(h)$ for different values of $p$, $q$, $p_c$, and given network parameters $E[U]$ and $V(U)$, used to fit a beta distribution with parameters $\alpha$ and $\beta$, with which we model the process of mtDNA distribution when a cell divides. Fig. \ref{fig:symm-50-both-stats-repel-taylor} shows the result of plotting $V_1'(h)$ for networked distributions with mutually repulsive mtDNA molecules. Despite imperfections (see fig. \ref{fig:app-sim-theory-repel}), it will be seen that the the model captures qualitative behaviour of the simulations. For instance, the maximal increase in variability is smaller, and the copy number variance is smaller than binomial for homogeneous networks, when compared to random reticulated mtDNA distributions.
 
 \begin{figure}
 \centering
-\includegraphics[width=\linewidth]{symm-50-both-stats-repel-taylor.png}
-\caption{\textbf{Repulsive reticulated mtDNA placement reduces cell-to-cell variability in mtDNA quality compared to random reticulated mtDNA placement, and tightens copy control number to sub-binomial.} $V'(h)$ (left column) and $V(N)$ (right column) for repulsive mtDNA placement in the network. The three columns to a facet show the different seed numbers, $4, 16$ and $64$, from left to right, respectively. The two rows to a facet show different parent heteroplasmy levels, $h=0.1$ in the top row and $h=0.5$ in the bottom row, respectively. In each panel, statistics for different values of wild and mutant type network inclusion parameters $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue. Each $(p,q)$-pair comprises $\mathcal{N}=5000$ asymmetric cell divisions. The daughter of interest inherits 50\% of the parent cytoplasm.}\label{fig:symm-50-both-stats-repel-taylor}
+\includegraphics[width=\linewidth]{symm-50-both-stats-taylor-repel.png}
+\caption{\textbf{Repulsive reticulated mtDNA placement reduces cell-to-cell variability in mtDNA quality compared to random reticulated mtDNA placement, and tightens copy control number to sub-binomial.} $V'(h)$ (left column) and $V(N)$ (right column) for repulsive mtDNA placement in the network. The three columns to a facet show the different seed numbers, $4, 16$ and $64$, from left to right, respectively. The two rows to a facet show different parent heteroplasmy levels, $h=0.1$ in the top row and $h=0.5$ in the bottom row, respectively. In each panel, statistics for different values of wild and mutant type network inclusion parameters $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue. Each $(p,q)$-pair comprises $\mathcal{N}=10,000$ asymmetric cell divisions. The daughter of interest inherits 50\% of the parent cytoplasm.}\label{fig:symm-50-both-stats-repel-taylor}
 \end{figure}
 
-If we further assume symmetric cell division, $p_c=1/2$, and that $p=q-\delta$, for which $\kappa = p(1+\delta)$, we find that
+
+\textcolor{blue}{XXX DROP THIS? Might be interesting to do this exercise for $V(N)$.
+Assuming symmetric cell division, $p_c=1/2$, and that $p=q-\delta$ -- $\delta$ being a measure of genetic bias -- for which $\kappa = p(1+\delta)$, we find that
 \begin{equation}
     \begin{split}
-      V_1'(h) & = 4V(U)\left(p_f^{-1}\delta^2-\frac{p(p+\delta)}{p(1+\delta)N_0-1}((1-h)^2+h^2)\right)\\
-      & + \frac{1}{N_0}\left(1-p+\delta(1-h)\right)\\
-      & + \frac{p(p-\delta)}{p(1+\delta)N_0-1}\left((1-h)^2+h^2\right)
+      V_1(h) & = 4V(U)\left(h(1-h)^2\delta^2-h(1-h)\frac{p(p-\delta)}{p(1+\delta)N_0-1}((1-h)^2+h^2)\right)\\
+      & + h(1-h)\frac{1}{N_0}\left(1-p+\delta(1-h)\right)\\
+      & + h(1-h)\frac{p(p-\delta)}{p(1+\delta)N_0-1}\left((1-h)^2+h^2\right)
     \end{split}
 \end{equation}
-In the limit of $\delta\rightarrow 0$, i.e., no genetic bias, we find that
+In the limit of $\delta\rightarrow 0$, i.e., no genetic bias,
 \begin{equation}
     \begin{split}
-      V_1'(h) & = 4V(U)\left(\frac{p^2}{pN_0-1}((1-h)^2+h^2)\right)\\
-      & + \frac{1}{N_0}\left(1-p\right)\\
-      & + \frac{p^2}{pN_0-1}\left((1-h)^2+h^2\right)
+      V_1(h) & = 4V(U)\left(-h(1-h)\frac{p^2}{pN_0-1}((1-h)^2+h^2)\right)\\
+      & + h(1-h)\frac{1}{N_0}\left(1-p\right)\\
+      & + h(1-h)\frac{p^2}{pN_0-1}\left((1-h)^2+h^2\right)
     \end{split}
 \end{equation}
-or
+Finally, dividing by $h(1-h)$, supposing that $pN_0-1\approx pN_0$, and simplifying, we find
 \begin{equation}
-    \begin{split}
-      V_1'(h) & = \frac{1}{N_0}\left(1-p\right)\\
-      & + (\frac{1}{N_0})(1-4V(U))\left(-p_f^{-1}\frac{p^2}{pN_0-1}((1-h)^2+h^2)\right)\\
-    \end{split}
+      V_1'(h) = \frac{1}{N_0}\left(1-2ph(1-h)-4V(U)p((1-h)^2+h^2)\right)
 \end{equation}
-%%%%%%%%%%% Should this be under results, or here? I'm leaning towards here, since this is mainly an exploration of the formulae, and not really to do with the results we want to share %%%%%
-%%% Moved eq. (9)-(11) from results section to here 
-\begin{equation}\label{eq:mtCN_repel}
-    \begin{split}
-    V(N) & = N_0^2V(U)\left(p^2(1-h)^2+2pqp_f^{-1}+q^2h^2-\frac{2pq h(1-h)}{(\kappa N_0-1)}\right) \\
-           & + N_0p_c(1-p_c)\left(h(1-q)+(1-h)(1-p)+\frac{2pqN_0 h (1-h)}{(\kappa N_0-1)}\right)
-    \end{split}
-\end{equation}
-where, once again, $\kappa=p(1-h)+qh$. To derive the first-order Taylor expansion of the (normalized) heteroplasmy variance, we use the law of total variance and iterated expectation to (see appendix \ref{eq:app-V1h-general}), from which we find
-\begin{equation}\label{eq:v1h-net-repel}
-    \begin{split}
-V_1'(h) & = \frac{V(U)}{p_c^2}\left(h(1-h) (p-q)^2-\frac{pq}{\kappa N_0-1}((1-h)^2+h^2)\right)\\
-& + \frac{1-p_c}{p_c}\left(\frac{1}{N_0}((1-h)(1-q)+h(1-p))+\frac{pq}{\kappa N_0-1}((1-h)^2+h^2)\right)\\
-    \end{split}
-    \end{equation}
-
-%ROBERT COMMENTS ON THIS 
-%% (23.03.22 R)
-Once again, we see that $V(U)$-dependent terms are introduced, although a significant difference from eq. (\ref{eq:V1h_NetStoch_Complete}) lies in the cross-term in inclusion probabilities. This cross-term contributes negatively to (normalized) heteroplasmy variance in the term proportional to the network variance, but contributes positively to the term proportional to the cytoplasmic content. With $p = q$ and $p_c = 1/2$, the model simplifies to
-\begin{equation}
-    V_1'(h) = \frac{1}{N_0}(1-p)+(1-4V(U))\left(\frac{p^2}{pN_0-1}((1-h)^2+h^2)\right)
-\end{equation}
-For $p=0$, we recapitulate the binomial variance $1/N_0$, but as $p$ increases, there is a marked reduction in (normalized) heteroplasmy variance, essentially linear in $p$, particularly for $pN_0>>1$, which is proportional to the network variance. XXX CAN'T FOLLOW THIS
-%%
-%%%
-
-XXX IGJ IS CONFUSED HERE
-
-Looking to gain insights from eq. \ref{eq:V1h_NetStoch_Complete}, we write $p = q-\delta$. In this case, supposing that $\delta$ is small, wild-type and mutant mtDNA are treated almost equally by the network, with an almost equal proportion of the two admitted into the network.
-
-\begin{equation}
-V'_1(h) = \frac{1-p_c}{p_c N_0}
-        +\frac{h(1-h)}{p_c^2}\delta^2V(U)
-        -\frac{V(U)}{p_c^2N_0}(p+\delta (1-h))
-\end{equation}
-It will be seen that there is a quadratic dependence on $\delta$, the difference in inclusion probabilities for the different types of mtDNA. For $\delta\neq 0$, the network is genetically biased towards one of the types, to which there is associated an increase in $V'(h)$. For $\delta=0$, the network is unbiased, giving
-
-\begin{equation}
-V'_1(h) = \frac{1-p_c}{p_c N_0}
-        -\frac{V(U)}{p_c^2N_0}p
-\end{equation}
-When $p_c=1/2$, i.e., when cell division is symmetric,
-
-\begin{equation}\label{eq:vh-no-repel-delta}
-    V'_1(h) = \frac{1}{N_0}(1-4pV(U))
-\end{equation}
-This expression suggests that the network structure provides a negative contribution to $V'(h)$, resulting in a blue streak in the first order Taylor expansion of $V'(h)$, whereas, from the simulations, we expected a small \textit{increase} along the diagonal (shown in fig. (\ref{fig:sim-model-compare-nonrep}). The second order Taylor expansion corrects this (shown in fig. \ref{fig:app-vh-stats-no-repel}), with contributions of third order and higher in p and q (eq. \ref{eq:app_second_order_netvar}), but it overcompensates; we do not pursue higher order terms, mostly because they are hard to interpret, and present significant difficulties in calculations. We then asked whether statistical simulations would produce a better fit, and we find that there is good support for this model when mtDNA molecules are randomly distributed throughout the network in our simulations (figs. \ref{fig:app-sim-theory-no-repel} and \ref{fig:app-sim-theory-repel}).
-
-Note that the prefactor $(1-4pV(U))$ is positive for all parameterizations considered. Indeed, a variance $V(U)\geq1/4$ cannot be admitted by a Beta distribution with $\alpha,\beta\neq 0$. If $\alpha>>\beta$, the mean is almost 1, and the variance is close to zero because it is also multiplied by a factor of the order $\beta/\alpha$. On the other hand, if $\alpha<<\beta$, the mean is itself very small. Lastly, if $\alpha=\beta$, the mean is $1/2$, and the variance is inversely proportional to $4\cdot(2\alpha+1)>4$, i.e., a variance $V(U)<1/4$, since $\alpha>0$. Only in the limit $\alpha=\beta=0$, equality is achieved, under the rather artificial parameterization with $\alpha =\beta = 0$ \citep{johnson1995continuous}. To contrast with our simulations, the largest variance we acquired was $.024$, about a tenth of the approach to this limit, with 4 seed points.
+Here we see that we regain binomial segregation if $p=q=0$. As $p$ increases to $1$, the proportion of mtDNAs subject to binomial inheritance is reduced linearly, and network effects arise, with the network contents reducing heteroplasmy variance with increasing $p$. Once again, we see that $V(U)$-dependent terms are introduced, although a significant difference from eq. (\ref{eq:v1h-net}) lies in the cross-term in inclusion probabilities. This cross-term contributes negatively to (normalized) heteroplasmy variance in the term proportional to the network variance, but contributes positively to the term proportional to the cytoplasmic content. For $p=0$, we recapitulate the binomial variance $1/N_0$, but as $p$ increases, there is a marked reduction in (normalized) heteroplasmy variance, essentially linear in $p$, particularly for $pN_0>>1$, which is proportional to the network variance. XXX CAN'T FOLLOW THIS}
 
 
-\subsection{Higher-order moments and second-order Taylor expansion}\label{app:V2hGen_Moments}
+\subsection{Higher-order moments and second-order Taylor expansion}\label{app:v2h-gen-moments}
 Given some observed shortcomings in the ability of the first-order Taylor expansion to capture heteroplasmy variance, we asked whether the next-order terms in the Taylor expansion could refine the estimates. The second-order Taylor expansion of heteroplasmy level variance used for the nonuniform distribution mtDNAs can be expressed as $V_1(h)+V_2(h)$
-\begin{equation}
+\begin{equation}\label{eq:app-v2h-net}
     \begin{split}
         V_2(h) & =  h_M'h_{MM}''\mu_{M,3} + h_W'h_{WW}''\mu_{W,3}\\
        & + (2h_W'h_{MW}''+h_M'h_{WW}'')\mathrm{Cov}(M,W^2) + (2h_M'h_{MW}''+h_W'h_{MM}'')\mathrm{Cov}(M^2,W)\\
@@ -604,7 +566,7 @@ Given some observed shortcomings in the ability of the first-order Taylor expans
        & + h_{MW}''h_{WW}''\mathrm{Cov}(M,W^3)+h_{MW}''h_{MM}''\mathrm{Cov}(M^3,W)
     \end{split}
 \end{equation}
-where $V_1(h)$ is given by equation (\ref{eq:var-h-net-no-repel}), and the derivatives are given by
+where $V_1(h)$ is given by equation (\ref{eq:v1h-net}), and the derivatives are given by
 \begin{equation*}
     \begin{split}
         & h_W' =-\frac{m_nE[U]+m_cp_c}{(E[U](w_n+m_n)+p_c(w_c+m_c))^2}\\
@@ -771,36 +733,36 @@ Lastly, $\mathrm{Cov}(W,M^2)$ and  by the symmetry of the problem
     &+3(m_cp_c(1-p_c)+m_c^2p_c^2)w_nm_nV(U)
     \end{split}
 \end{equation}
-In Figs. \ref{fig:app-moments-no-repel}-\ref{fig:app-moments-repel}, we plot these expressions for the various moments and covariance in the system compared to those arising from our simulation model. We generally observe good agreement between theory and simulation (most departures are on a very small scale compared to the overall scale of the corresponding expression; arising due to small deviations from the Beta-distribution model for network mass). However, the overall second-order Taylor expression still deviates substantially from observed heteroplasmy variance (Fig. \ref{fig:app-vh-stats-no-repel}). One aspect of the first-order model is improved -- the increase on the $p=q$ diagonal. But the off-diagonal behaviour is substantially compromised, suggesting an overcompensation to the errors in the previous order. We conclude that higher-still terms in the expansion will be required to more perfectly capture the behaviour, and that convergence to the true behaviour may be rather slow.
+In Figs. \ref{fig:app-moments}-\ref{fig:app-moments-repel}, we plot these expressions for the various moments and covariance in the system compared to those arising from our simulation model. We generally observe good agreement between theory and simulation (most departures are on a very small scale compared to the overall scale of the corresponding expression; arising due to small deviations from the Beta-distribution model for network mass). However, the overall second-order Taylor expression still deviates substantially from observed heteroplasmy variance (Fig. \ref{fig:app-vh-stats}). One aspect of the first-order model is improved -- the increase on the $p=q$ diagonal. But the off-diagonal behaviour is substantially compromised, suggesting an overcompensation to the errors in the previous order. We conclude that higher-still terms in the expansion will be required to more perfectly capture the behaviour, and that convergence to the true behaviour may be rather slow.
 
 \subsubsection{Comparison of individual statistics}
-Here, we present the comparisons of simulation results with model results in both models to all relevant orders. First, one should note that the second order result only applies to the random reticulated mtDNA models, and then only for the heteroplasmy variance. This is because $h$ is a ratio of random variables, and which is differentiable an arbitrary number of times with respect to both variables, $W$ and $M$; the copy number variance, however, is linear in these random variables, and so the approximation is the same for all orders starting at first. Fig. \ref{fig:app-vh-stats-no-repel} shows comparisons of simulation results (top row) with first and second order results (middle and bottom rows), respectively. Here we see clearly that both first and second order approximations were needed to capture the behavior displayed in our simulations, but that neither provides a reasonable match: the first order approximation departs significantly along the diagonal, displaying a small decrease as opposed to a small increase; the second order approximation massively overestimates, causing a far too large an increase along the diagonal.% Fig. XXX (on statistical heatmaps?) show that statistical simulations provide a good match with simulation results, suggesting that mtDNA inheritance at cell division is well-approximated by a combination of binomial partitioning of cytoplasmic mtDNA and beta-binomial partitioning of reticulated mtDNA when reticulated mtDNA are randomly distributed within the network.  
+Here, we present the comparisons of simulation results with model results in both models to all relevant orders. First, one should note that the second order result only applies to the random reticulated mtDNA models, and then only for the heteroplasmy variance. This is because $h$ is a ratio of random variables, and which is differentiable an arbitrary number of times with respect to both variables, $W$ and $M$; the copy number variance, however, is linear in these random variables, and so the approximation is the same for all orders starting at first. Fig. \ref{fig:app-vh-stats} shows comparisons of simulation results (top row) with first and second order results (middle and bottom rows), respectively. Here we see clearly that both first and second order approximations were needed to capture the behavior displayed in our simulations, but that neither provides a reasonable match: the first order approximation departs significantly along the diagonal, displaying a small decrease as opposed to a small increase; the second order approximation massively overestimates, causing a far too large an increase along the diagonal.% Fig. XXX (on statistical heatmaps?) show that statistical simulations provide a good match with simulation results, suggesting that mtDNA inheritance at cell division is well-approximated by a combination of binomial partitioning of cytoplasmic mtDNA and beta-binomial partitioning of reticulated mtDNA when reticulated mtDNA are randomly distributed within the network.  
 \begin{figure}[!ht]
         \centering \includegraphics[width = 0.85\linewidth]{symm-50-vh-stats-no-repel.png}
-        \caption{\textbf{Comparison of simulation results with analytic model results for first and second order, respectively, in symmetric cell divisions with         random reticulated mtDNA distributions (eq. \ref{eq:model-no-repel}).} Simulation, first and second order analytic results for $V'(h)$ for random reticulated mtDNA distributions are shown in rows, from top to bottom, respectively, with the number of seed points, 4, 16, 64, respectively, in columns; the parent cell mutant proportion is $h_0=0.5$. In each panel, statistics for different values of wild and mutant type network inclusion probability $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue, with each $(p,q)$-pair comprising $\mathcal{N}=5000$ symmetric cell divisions. Whereas the first order theory in the second row produces results similar to our simulation results on the off-diagonal, capturing \textit{in silico} model structure for genetic bias, it fails to reproduce the increase observed along the diagonal. The second order theory, while loosely retaining the same structure on the off-diagonal as the first order theory, overestimates this increase along the diagonal. It is reasonable to expect that our model captures this behavior if we were to derive even higher order terms.}\label{fig:app-vh-stats-no-repel}
+        \caption{\textbf{Comparison of simulation results with analytic model results for first and second order, respectively, in symmetric cell divisions with         random reticulated mtDNA distributions (eq. \ref{eq:model}).} Simulation, first and second order analytic results for $V'(h)$ for random reticulated mtDNA distributions are shown in rows, from top to bottom, respectively, with the number of seed points, 4, 16, 64, respectively, in columns; the parent cell mutant proportion is $h_0=0.5$. In each panel, statistics for different values of wild and mutant type network inclusion probability $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue, with each $(p,q)$-pair comprising $\mathcal{N}=10,000$ symmetric cell divisions. Whereas the first order theory in the second row produces results similar to our simulation results on the off-diagonal, capturing \textit{in silico} model structure for genetic bias, it fails to reproduce the increase observed along the diagonal. The second order theory, while loosely retaining the same structure on the off-diagonal as the first order theory, overestimates this increase along the diagonal. It is reasonable to expect that our model captures this behavior if we were to derive even higher order terms.}\label{fig:app-vh-stats}
 \end{figure}
-Figure \ref{fig:app-vn-stats-no-repel} compares \textit{in silico} model results with theory of $V(N)$ for random reticulated mtDNA distributions. For networks with large variance (left; small seed numbers), the mtDNA copy number increases rapidly as the inclusion probabilities increase; the variance is maximized when all mtDNAs are reticulated.
+Figure \ref{fig:app-vn-stats} compares \textit{in silico} model results with theory of $V(N)$ for random reticulated mtDNA distributions. For networks with large variance (left; small seed numbers), the mtDNA copy number increases rapidly as the inclusion probabilities increase; the variance is maximized when all mtDNAs are reticulated.
 \begin{figure}[!ht]
         \centering \includegraphics[width = 0.85\linewidth]{symm-50-vn-stats-no-repel.png}
-        \caption{\textbf{Comparison of simulation results with first order analytic model results in symmetric cell divisions with repulsive reticulated mtDNA distributions (eq. \ref{eq:model-repel}).} Simulation and first order analytic results for $V'(h)$ for repulsive reticulated mtDNA distributions are shown in rows, from top to bottom, respectively, with the number of seed points, 4, 16, 64, respectively, in columns; the parent cell mutant proportion is $h_0=0.5$. In each panel, statistics for different values of wild and mutant type network inclusion probability $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue, with each $(p,q)$-pair comprising $\mathcal{N}=5000$ symmetric cell divisions.}\label{fig:app-vn-stats-no-repel}
+        \caption{\textbf{Comparison of simulation results with first order analytic model results in symmetric cell divisions with repulsive reticulated mtDNA distributions (eq. \ref{eq:model-repel}).} Simulation and first order analytic results for $V'(h)$ for repulsive reticulated mtDNA distributions are shown in rows, from top to bottom, respectively, with the number of seed points, 4, 16, 64, respectively, in columns; the parent cell mutant proportion is $h_0=0.5$. In each panel, statistics for different values of wild and mutant type network inclusion probability $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue, with each $(p,q)$-pair comprising $\mathcal{N}=10,000$ symmetric cell divisions.}\label{fig:app-vn-stats}
 \end{figure}
 Fig. \ref{fig:app-vh-stats-repel} compares simulation results with first order model results in symmetric cell divisions with parent cell heteroplasmy level $h_0=0.5$. The repulsive reticulated mtDNA model displays very little increase along the diagonal, with smaller increases to $V'(h)$ than random reticulated mtDNA distributions for nonzero genetic biases and heterogeneous networks. When homogeneous, however, the networks have the effect of decreasing the heteroplasmy variance for maximal genetic bias. Our repulsive reticulated mtDNA model again captures the behavior for large genetic bias, but along the diagonal (no genetic bias), it decreases quite a lot. The likely reason for this is that we assume that the mtDNA molecules to be distributed \textit{exactly} fit into the network, essentially dividing the network into discrete entities into which mtDNA molecules may be distributed. Since we use the minimal distance that we \textit{prescribe} in our model distributions, the simulated networks may have significantly different minimal inter-mtDNA distances compared to this prescribed value, which is simply the lower limit of the actual minimal-mtDNA distance for a given network.
 \begin{figure}[!ht]
         \centering \includegraphics[width = 0.85\linewidth]{symm-50-vh-stats-repel.png}
-        \caption{\textbf{Comparison of simulation results with first order analytic model results in symmetric cell divisions with random reticulated mtDNA distributions (eq. \ref{eq:model-repel}).} Simulation and first order analytic results for $V(N)$ for random reticulated mtDNA distributions are shown in rows, from top to bottom, respectively, with the number of seed points, 4, 16, 64, respectively, in columns; the parent cell mutant proportion is $h_0=0.5$. In each panel, statistics for different values of wild and mutant type network inclusion probability $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue, with each $(p,q)$-pair comprising $\mathcal{N}=5000$ symmetric cell divisions.}\label{fig:app-vh-stats-repel} 
+        \caption{\textbf{Comparison of simulation results with first order analytic model results in symmetric cell divisions with random reticulated mtDNA distributions (eq. \ref{eq:model-repel}).} Simulation and first order analytic results for $V(N)$ for random reticulated mtDNA distributions are shown in rows, from top to bottom, respectively, with the number of seed points, 4, 16, 64, respectively, in columns; the parent cell mutant proportion is $h_0=0.5$. In each panel, statistics for different values of wild and mutant type network inclusion probability $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue, with each $(p,q)$-pair comprising $\mathcal{N}=10,000$ symmetric cell divisions.}\label{fig:app-vh-stats-repel} 
 \end{figure}
 %Figure \ref{fig:app-vn-stats-repel} compares \textit{in silico} model results with theory of $V(N)$ for repulsive reticulated mtDNAs. For networks with large variance (left; small seed numbers), the mtDNA copy number increases rapidly as the inclusion probabilities increase, and plateus; our model indicates that $V(N)$ continues to increase beyond this plateau. For intermediate variance (middle; intermediate seed numbers), the discrepancy between the results appear the largest. Here the analytic results do not capture the spuriousness of the relationship between inclusion probabilities and $V(N)$. For uniformly distributed networks (right; large seed numbers), we see that the mutual repulsion of mtDNA causes $V(N)$ to drop below the null value of 25, indicating finer-than-binomial control of mtDNA copy number.
 % XXX can this be removed without losing anything
 \begin{figure}[!ht]
         \centering \includegraphics[width = 0.85\linewidth]{symm-50-vn-stats-repel.png}
-        \caption{ \textbf{Comparison of simulation results with first order analytic model results in symmetric cell divisions with repulsive reticulated mtDNA distributions (eq. \ref{eq:model-repel}).} Simulation and first order analytic results for $V(N)$ for repulsive reticulated mtDNA distributions are shown in rows, from top to bottom, respectively, with the number of seed points, 4, 16, 64, respectively, in columns; the parent cell mutant proportion is $h_0=0.5$. In each panel, statistics for different values of wild and mutant type network inclusion probability $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue, with each $(p,q)$-pair comprising $\mathcal{N}=5000$ symmetric cell divisions.}\label{fig:app-vn-stats-repel}
+        \caption{ \textbf{Comparison of simulation results with first order analytic model results in symmetric cell divisions with repulsive reticulated mtDNA distributions (eq. \ref{eq:model-repel}).} Simulation and first order analytic results for $V(N)$ for repulsive reticulated mtDNA distributions are shown in rows, from top to bottom, respectively, with the number of seed points, 4, 16, 64, respectively, in columns; the parent cell mutant proportion is $h_0=0.5$. In each panel, statistics for different values of wild and mutant type network inclusion probability $p$ (x-axis) and $q$ (y-axis), respectively, are compared to symmetric binomial segregation absent networks (white), with progressively larger values shown in progressively deeper red, and smaller values shown in progressively deeper blue, with each $(p,q)$-pair comprising $\mathcal{N}=10,000$ symmetric cell divisions.}\label{fig:app-vn-stats-repel}
 \end{figure}
 \subsubsection{Comparing theory with simulation}
 % Statistical comparisons
 \begin{figure}[!ht]
         \centering \includegraphics[width = 0.85\linewidth]{symm-50-sim-theory-comparison-no-repel.png}
-        \caption{\textbf{Simulation and theory comparisons for random reticulated mtDNA distributions (eq. \ref{eq:model-no-repel}) in symmetric cell divisions.} The top row shows simulated vs. predicted $V(h)$ to first and second order, respectively, in the two left-most panels, with the rightmost panel showing simulated vs. predicted $V(N)$. In the top row, an initial mutant proportion of $h_0=0.1$ is shown as red points, and $h_0=0.5$ in blue. The bottom row shows comparisons between the \textit{in silico} model results and statistical simulations for different parent cell mtDNA copy number $N_0$ in columns (20,50,100), and $\alpha(=\beta)$ for the Beta distribution from which the network is drawn in rows (0.1,1,10,100). Different parent cell mutant proportions are shown as different colors. Although the heteroplasmy level variance $V(h)$ is subject to small number effects, the mtDA copy number of the smaller daughter is consistently well-estimated across a wide range of parameterizations.}
-\end{figure}\label{fig:app-sim-theory-no-repel}
+        \caption{\textbf{Simulation and theory comparisons for random reticulated mtDNA distributions (eq. \ref{eq:model}) in symmetric cell divisions.} The top row shows simulated vs. predicted $V(h)$ to first and second order, respectively, in the two left-most panels, with the rightmost panel showing simulated vs. predicted $V(N)$. In the top row, an initial mutant proportion of $h_0=0.1$ is shown as red points, and $h_0=0.5$ in blue. The bottom row shows comparisons between the \textit{in silico} model results and statistical simulations for different parent cell mtDNA copy number $N_0$ in columns (20,50,100), and $\alpha(=\beta)$ for the Beta distribution from which the network is drawn in rows (0.1,1,10,100). Different parent cell mutant proportions are shown as different colors. Although the heteroplasmy level variance $V(h)$ is subject to small number effects, the mtDA copy number of the smaller daughter is consistently well-estimated across a wide range of parameterizations.}
+\end{figure}\label{fig:app-sim-theory}
 \begin{figure}[!ht]
         \centering \includegraphics[width = 0.85\linewidth]{symm-50-sim-theory-comparison-repel.png}
         \caption{\textbf{Simulation and theory comparisons for repulsive reticulated mtDNA distributions (eq. \ref{eq:model-repel}) in symmetric cell divisions.} The top row shows simulated vs. predicted $V(h)$ to first order in the left panel, with the right panel showing simulated vs. predicted $V(N)$. Initial mutant proportion of $h_0=0.1$ is shown as red points, and $h_0=0.5$ in blue. The bottom row shows comparisons between the \textit{in silico} model results and statistical simulations for different parent cell mtDNA copy number $N_0$ in columns (20,50,100), and $\alpha(=\beta)$ for the Beta distribution from which the network is drawn in rows (0.1,1,10,100). Different parent cell mutant proportions are shown as different colors. The model fit is expected to systematically diverge from simulation results due to our assumption that mtDNA molecules \textit{exactly} fill up the network inherited by the daughter of interest, to the effect of systematically overestimating variances, particularly for more network contents. Once again, for statistical simulations, the mtDNA copy number variance model fit is tight.}\label{fig:app-sim-theory-repel}
@@ -808,8 +770,8 @@ Fig. \ref{fig:app-vh-stats-repel} compares simulation results with first order m
 % Moments
 \begin{figure}
         \centering \includegraphics[width = 0.85\linewidth]{all-props-moments-no-repel.png}
-        \caption{\textbf{Comparisons of individual simulation moments (y-axes) and analytic moments (x-axes) for random reticulated mtDNA distributions (eq. \ref{eq:model-no-repel}) for varying parent cell cytoplasm proportions inherited by the smallest daughter.} Individual moments and first order model comparisons of \textit{in silico} model results along the y-axes with analytic non-repulsive model results along the x-axes. Colors reflect the proportion of parent cell volume apportioned to the daughter of interest with $50\%$ in blue $25\%$ in green, and $10\%$ in red. The analytic moments fit our simulation results well not only for different seed numbers and initial heteroplasmy levels, but also in the cases in which different proportions of the parent cell volume is apportioned to the daughter of interest.
-        }\label{fig:app-moments-no-repel}
+        \caption{\textbf{Comparisons of individual simulation moments (y-axes) and analytic moments (x-axes) for random reticulated mtDNA distributions (eq. \ref{eq:model}) for varying parent cell cytoplasm proportions inherited by the smallest daughter.} Individual moments and first order model comparisons of \textit{in silico} model results along the y-axes with analytic non-repulsive model results along the x-axes. Colors reflect the proportion of parent cell volume apportioned to the daughter of interest with $50\%$ in blue $25\%$ in green, and $10\%$ in red. The analytic moments fit our simulation results well not only for different seed numbers and initial heteroplasmy levels, but also in the cases in which different proportions of the parent cell volume is apportioned to the daughter of interest.
+        }\label{fig:app-moments}
 \end{figure}
 \begin{figure}
         \centering \includegraphics[width = 0.85\linewidth]{all-props-moments-repel.png}

@@ -84,7 +84,7 @@ vhpred = function(alpha, beta, p, q, h, n, prop) {
   #  mwc4 = (1-p)*(1-h)*n*( eu - eu*eu + ( 3*(1-p)*(1-h)*n - 6)*(eu^2 - 2*eu^3 + eu^4) )
   mwc4 = wn*pc*(1-pc)*(1 + (3*wc-6)*pc*(1-pc))
   
-  mmn3 = - ( h*n*q*alpha*beta*(alpha-beta) * (2*h*h*n*n*q*q - 3*h*n*q*(alpha+beta) + (alpha+beta)*(alpha+beta)) ) / ( (alpha+beta)*(alpha+beta)*(alpha+beta)*(1 + alpha + beta)*(2 + alpha + beta)  )
+  mmn3 = - ( h*n*q*alpha*beta*(alpha-beta) * (2*h*h*n*n*q*q + 3*h*n*q*(alpha+beta) + (alpha+beta)*(alpha+beta)) ) / ( (alpha+beta)*(alpha+beta)*(alpha+beta)*(1 + alpha + beta)*(2 + alpha + beta)  )
  #  mmc3 = (1-q)*h*n*(eu*(1-3*eu) + 2*eu*eu*eu)
   mmc3 = mc*(pc - 3*pc*pc + 2*pc*pc*pc)
  
@@ -110,18 +110,18 @@ vhpred = function(alpha, beta, p, q, h, n, prop) {
   vn = pc*(1-pc)*n + (p*(1-h)+q*h)*n*((p*(1-h)+q*h)*n - 1)*vu
   
   # derivatives of h for use in Taylor expansions
-  #hm = (1-h)/(eu*n)
-  #hw = -h/(eu*n) #XXX FIX
-  #hmm = -2*(1-h)/(eu*eu*n*n)
-  #hww = 2*h/(eu*eu*n*n)
-  #hmw = 2*h/(eu*eu*n*n) - 2/(eu*n*n)
+  hm = (1-h)/(eu*n)
+  hw = -h/(eu*n) #XXX FIX
+  hmm = -2*(1-h)/(eu*eu*n*n)
+  hww = 2*h/(eu*eu*n*n)
+  hmw = 2*h/(eu*eu*n*n) - 2/(eu*n*n)
 
   # Derivatives with eu and pc
-  hm  = (wn*eu+wc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
-  hw  =-(mn*eu+mc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
-  hmm =-2*(wn*eu+wc*pc)/((wn+mn)*eu+(wc+mc)*pc)^3
-  hww = 2*(mn*eu+mc*pc)/((wn+mn)*eu+(wc+mc)*pc)^3
-  hmw = ((mn-wn)*eu+(mc-wc)*pc)/((wn+mn)*eu+(wc+mc)*pc)^3
+  #hm  = (wn*eu+wc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
+  #hw  =-(mn*eu+mc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
+  #hmm =-2*(wn*eu+wc*pc)/((wn+mn)*eu+(wc+mc)*pc)^3
+  #hww = 2*(mn*eu+mc*pc)/((wn+mn)*eu+(wc+mc)*pc)^3
+  #hmw = ((mn-wn)*eu+(mc-wc)*pc)/((wn+mn)*eu+(wc+mc)*pc)^3
   
   kappa = p*(1-h)+q*h
 
@@ -147,6 +147,7 @@ vhpredrepel = function(alpha, beta, p, q, h, n, prop) {
   eu = alpha/(alpha+beta)
   vu = (alpha*beta)/((alpha+beta)^2*(alpha+beta+1))
   pc = prop
+  l = 0.01
 
   # E(U^2)
   eu2 = alpha*(1+alpha) / ((alpha+beta)*(alpha+beta+1))
@@ -163,9 +164,7 @@ vhpredrepel = function(alpha, beta, p, q, h, n, prop) {
   cwm = cmnwn = p*(1-h)*q*h*n*n*eu2 - p*(1-h)*q*h*n*n*eu^2
 
   vwn = ( p*(1-h)*q*h*n*n / ((p*(1-h)+q*h)*n -1) ) *(eu-eu2) + p^2*(1-h)^2*n^2*vu
-  #vwm = ( 1/(0.01*0.01*(wn+mn)*(wn+mn)) )*( ( p*(1-h)*q*h*n*n / ((p*(1-h)+q*h)*n -1) ) *(eu-eu2) + p^2*(1-h)^2*n^2*vu )
   vmn = vu*((p*(1-h)+q*h)*n)^2 + vwn - 2*p*(1-h)*n*(p*(1-h)+q*h)*n*vu
-	#vmn = 
 
   vmc = h*(1-q)*n*pc*(1-pc)
   vwc = (1-h)*(1-p)*n*pc*(1-pc)
@@ -177,10 +176,10 @@ vhpredrepel = function(alpha, beta, p, q, h, n, prop) {
   mh = mm/(mw+mm)
 
   # derivatives of h for use in Taylor expansions
-  #hm = (1-h)/(eu*n)
-  #hw = -h/(eu*n)
-  hm = (wn*eu+wc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
-  hw =-(mn*eu+mc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
+  hm = (1-h)/(eu*n)
+  hw = -h/(eu*n)
+  #hm = (wn*eu+wc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
+  #hw =-(mn*eu+mc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
 
   # first-order
   v1 = hm*hm*vm + hw*hw*vw + 2*hw*hm*cwm
@@ -360,16 +359,13 @@ if(repel){
 	#cat(paste(c("vhmax, vnmax = ",toString(vhmax), ", ", toString(vnmax), "\n"),sep=""))
 	pc = plot.prop
 
-	# Color gradient comparing to asymmetric symmetric without network, i.e.,  (1/n)
-	# This is a really ugly setup, which causes rather uniform redness across heatmaps
-	#vhl = (1/n)/vhmax
-
+	nullret = vhest(0,0,h.to.plot,n,prop.to.plot,Alpha[1],Beta[1])
 	# Color gradient to compare asymmetric to asymmetric without network, i.e., ((1-pc)/pc)*(1/n)
-	vhl = ((1-pc)/pc)*(1/n)/vhmax 
+	vhl = nullret[3]/vhmax
 	colfn = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
 						values = c(0,vhl/2,vhl,2*vhl,1),  limits = c(0,vhmax))
 
-	vnl = pc*(1-pc)*n/vnmax
+	vnl = nullret[4]/vnmax
 	colfn2 = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
 							values = c(0,vnl/2,vnl,2*vnl,1), limits = c(0,vnmax))
 	
@@ -385,16 +381,13 @@ if(repel){
 
 	pc = plot.prop
 
-	# Color gradient comparing to asymmetric symmetric without network, i.e.,  (1/n)
-	# This is a really ugly setup, which causes rather uniform redness across heatmaps
-	#vhl = (1/n)/vhmax
-
+	nullret = vhest(0,0,h.to.plot,n,prop.to.plot,Alpha[1],Beta[1])
 	# Color gradient to compare asymmetric to asymmetric without network, i.e., ((1-pc)/pc)*(1/n)
-	vhl = ((1-pc)/pc)*(1/n)/vhmax 
+	vhl = nullret[3]/vhmax
 	colfn = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
 						values = c(0,vhl/2,vhl,2*vhl,1),  limits = c(0,vhmax))
 
-	vnl = pc*(1-pc)*n/vnmax
+	vnl = nullret[4]/vnmax
 	colfn2 = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
 							values = c(0,vnl/2,vnl,2*vnl,1), limits = c(0,vnmax))
 	
@@ -412,11 +405,12 @@ if(repel){
 
 filename = paste(c(label, "-vh-stats-", ifelse(repel, "repel.png", "no-repel.png")), collapse="")
 res.factor = 3
-png(filename, width=1000*res.factor, height=1000*res.factor, res=72*res.factor)
 if(repel){
+	png(filename, width=1000*res.factor, height=500*res.factor, res=72*res.factor)
 	grid.arrange(g3.1, nrow = 1)
 	#grid.arrange(g3.1, g3.2, nrow=2)	
 } else {
+	png(filename, width=1000*res.factor, height=1000*res.factor, res=72*res.factor)
 	grid.arrange(g3.1, g3.2, g3.3, nrow=3)
 }
 
@@ -431,12 +425,13 @@ pc = plot.prop
 # This is a really ugly setup, which causes rather uniform redness across heatmaps
 #vhl = (1/n)/vhmax
 
+nullret = vhest(0,0,h.to.plot,n,prop.to.plot,Alpha[1],Beta[1])
 # Color gradient to compare asymmetric to asymmetric without network, i.e., ((1-pc)/pc)*(1/n)
-vhl = ((1-pc)/pc)*(1/n)/vhmax 
+vhl = nullret[3]/vhmax
 colfn = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
 					values = c(0,vhl/2,vhl,2*vhl,1),  limits = c(0,vhmax))
 
-vnl = pc*(1-pc)*n/vnmax
+vnl = nullret[4]/vnmax
 colfn2 = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
 						values = c(0,vnl/2,vnl,2*vnl,1), limits = c(0,vnmax))
 
@@ -460,17 +455,15 @@ vhmax = max(c(max(plot.df$plot.simhet),max(plot.df$plot.predhet1)))
 
 pc = plot.prop
 
-# Color gradient comparing to asymmetric symmetric without network, i.e.,  (1/n)
-#vhl = (1/n)/vhmax
-
+nullret = vhest(0,0,h.to.plot,n,prop.to.plot,Alpha[1],Beta[1])
 # Color gradient to compare asymmetric to asymmetric without network, i.e., ((1-pc)/pc)*(1/n)
-vhl = ((1-pc)/pc)*(1/n)/vhmax 
+vhl = nullret[3]/vhmax
 colfn = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
-					values = c(0,vhl/2,vhl,2*vhl,1),  limits = c(0,vhmax))
+			     values = c(0,vhl/2,vhl,2*vhl,1),  limits = c(0,vhmax))
 
-vnl = pc*(1-pc)*n/vnmax
+vnl = nullret[4]/vnmax
 colfn2 = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
-						values = c(0,vnl/2,vnl,2*vnl,1), limits = c(0,vnmax))
+			      values = c(0,vnl/2,vnl,2*vnl,1), limits = c(0,vnmax))
 
 if(repel){
 	# Plot simulation results (5.1, 5.2) and predictions (5.3,5.4) separately for repulsive case?
@@ -489,11 +482,11 @@ if(repel){
 
 	 res.factor = 3
 	 filename = paste(c(label, "-both-stats-", "repel.png"), collapse="")
-	 png(filename, width=1000*res.factor, height=800*res.factor, res=72*res.factor)
+	 png(filename, width=1000*res.factor, height=400*res.factor, res=72*res.factor)
 	 grid.arrange(g5.1, g5.2, nrow=1)
 	 dev.off()
 	 filename = paste(c(label, "-both-stats-taylor-", "repel.png"), collapse="")
-	 png(filename, width=1000*res.factor, height=800*res.factor, res=72*res.factor)
+	 png(filename, width=1000*res.factor, height=400*res.factor, res=72*res.factor)
 	 grid.arrange(g5.3, g5.4, nrow=1)
 	 dev.off()
 }else{
@@ -645,136 +638,184 @@ if(repel){
 	grid.arrange(g1.1, g1.2, g1.3, g2.1, g2.2, g2.3, nrow=2)
 }
 dev.off()
+if(length(unique(res.1.df$h))>1){
+	if(!repel){
+		cat("Estimating and plotting V(h) = E(h^2)-E(h)^2 by sum over state variables ...\n")
 
-if(!repel){
-	cat("Estimating and plotting V(h) = E(h^2)-E(h)^2 by sum over state variables ...\n")
+		plot.df.vhest = data.frame(seeds = NULL, alpha = NULL, beta = NULL, n = NULL, p = NULL, q = NULL, h = NULL, vh = NULL, vn = NULL)
 
-	plot.df.vhest = data.frame(seeds = NULL, alpha = NULL, beta = NULL, n = NULL, p = NULL, q = NULL, h = NULL, vh = NULL, vn = NULL)
+		pc = prop.to.plot
+		nseeds = c(4,16,64)
+		cat(paste0("pc = ", paste0(toString(round(pc,2)), "\n")))
+		for(h in c(0.1,0.5)){
+			for(k in 1:length(Alpha)){
+				for(i in 0:10){
+					for(j in 0:10){
+					p = i*0.1
+					q = j*0.1
 
-	pc = prop.to.plot
-	nseeds = c(4,16,64)
-	cat(paste0("pc = ", paste0(toString(round(pc,2)), "\n")))
-	for(h in c(0.1,0.5)){
-		for(k in 1:length(Alpha)){
-			for(i in 0:10){
-				for(j in 0:10){
-				p = i*0.1
-				q = j*0.1
+					alpha = Alpha[k]
+					beta = Beta[k]
+					seeds = nseeds[k]
+					ret = vhest(p,q,h,n,pc,alpha,beta)
+					alph = ret[1]
+					bet = ret[2]
+					vh = ret[3]
+					vn = ret[4]
 
-				alpha = Alpha[k]
-				beta = Beta[k]
-				seeds = nseeds[k]
-				ret = vhest(p,q,h,n,pc,alpha,beta)
-				alph = ret[1]
-				bet = ret[2]
-				vh = ret[3]
-				vn = ret[4]
-
-				plot.df.vhest = rbind(plot.df.vhest,data.frame(seeds = seeds,alpha=alph,beta=bet,n=n,p=p,q=q,h=h,vh=vh,vn=vn))
-				}   
+					plot.df.vhest = rbind(plot.df.vhest,data.frame(seeds = seeds,alpha=alph,beta=bet,n=n,p=p,q=q,h=h,vh=vh,vn=vn))
+					}   
+				}
 			}
 		}
+
+		vnmax = max(max(plot.df$plot.simn),max(plot.df.vhest$vn))
+		vhmax = max(max(plot.df$plot.simhet),max(plot.df.vhest$vh))
+
+		nullret = vhest(0,0,h.to.plot,n,prop.to.plot,Alpha[1],Beta[1])
+		# Color gradient to compare asymmetric to asymmetric without network, i.e., ((1-pc)/pc)*(1/n)
+		vhl = nullret[3]/vhmax
+		colfn = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
+							values = c(0,vhl/2,vhl,2*vhl,1),  limits = c(0,vhmax))
+
+		vnl = nullret[4]/vnmax
+		colfn2 = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
+								values = c(0,vnl/2,vnl,2*vnl,1), limits = c(0,vnmax))
+
+
+		cat(paste0("vhmax = ", paste0(toString(round(vhmax,5)), "\n")))
+		cat(paste0("vnmax = ", paste0(toString(round(vnmax)), "\n")))
+
+		g6.1 = ggplot(plot.df, aes(x=p, y=q, fill=plot.simhet)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "simhet   ")+
+			theme(axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)))
+		g6.2 = ggplot(plot.df, aes(x=p, y=q, fill=plot.simn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "simn     ")+
+			theme(axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)))
+		p6.3 = ggplot(plot.df.vhest, aes(x=p,y=q,fill=vh))+geom_tile()+colfn+facet_grid(h ~ seeds) + labs(fill = "esthet   ")+
+			theme(axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)))
+		p6.4 = ggplot(plot.df.vhest, aes(x=p,y=q,fill=vn))+geom_tile()+colfn2+facet_grid(h ~ seeds) + labs(fill = "estn     ")+
+			theme(axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)))
+
+		filename = paste(c(label,"-fig-sim-est.png"),collapse="")
+		res.factor = 3
+		png(filename, height = 1000*res.factor, width = 1000*res.factor, res = 72*res.factor)
+		grid.arrange(g6.1, g6.2, p6.3, p6.4, ncol = 2)
+		dev.off()
+
+		plot.df.vhest.h = plot.df.vhest[plot.df.vhest$h == 0.5,]  
+		plot.df.1 = res.1.df[res.1.df$h == 0.1,]
+		plot.df.2 = res.1.df[res.1.df$h == 0.5,]
+
+		vnmax = max(max(plot.df.1$plot.simn),max(plot.df.2$plot.simn),max(plot.df.vhest.h$vn),max(plot.df$plot.predn))
+		vhmax = max(max(plot.df.1$plot.simhet),max(plot.df.2$plot.simhet),max(plot.df.vhest.h$vh),max(plot.df$plot.predhet1))
+
+		nullret = vhest(0,0,h.to.plot,n,prop.to.plot,Alpha[1],Beta[1])
+		# Color gradient to compare asymmetric to asymmetric without network, i.e., ((1-pc)/pc)*(1/n)
+		vhl = nullret[3]/vhmax
+		colfn = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
+							values = c(0,vhl/2,vhl,2*vhl,1),  limits = c(0,vhmax))
+
+		vnl = nullret[4]/vnmax
+		colfn2 = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
+								values = c(0,vnl/2,vnl,2*vnl,1), limits = c(0,vnmax))
+
+		g7.1 = ggplot(plot.df.1, aes(x=p, y=q, fill=plot.simhet)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "simhet  ", tag = "A") + 
+			theme(plot.title = element_text(face = "bold", size = rel(1.25)),
+						axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)),
+						legend.text = element_text(size = rel(1.1))) 
+		g7.2 = ggplot(plot.df.1, aes(x=p, y=q, fill=plot.simn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "simn    ", tag = "")+
+			theme(axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)),
+						legend.text = element_text(size = rel(1.1)))
+		g7.3 = ggplot(plot.df.2, aes(x=p, y =q, fill=plot.simhet)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "simhet  ", tag = "B") + 
+			theme(plot.title = element_text(face = "bold", size = rel(1.25)),
+						axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)),
+						legend.text = element_text(size = rel(1.1)))
+		g7.4 = ggplot(plot.df.2, aes(x=p, y =q, fill=plot.simn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "simn    ", tag = "")+
+			theme(axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)),
+						legend.text = element_text(size = rel(1.1)))
+		g7.5 = ggplot(plot.df.vhest.h, aes(x=p,y=q,fill=vh))+geom_tile()+colfn+facet_grid(h ~ seeds) + labs(fill = "esthet  ", tag = "C") + 
+			theme(plot.title = element_text(face = "bold", size = rel(1.25)),
+						axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)),
+						legend.text = element_text(size = rel(1.1)))
+		g7.6 = ggplot(plot.df.vhest.h, aes(x=p,y=q,fill=vn))+geom_tile()+colfn2+facet_grid(h ~ seeds) + labs(fill = "estn    ", tag = "")+
+			theme(axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)),
+						legend.text = element_text(size = rel(1.1)))
+		g7.7 = ggplot(plot.df.2, aes(x=p, y=q, fill=plot.predhet1)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "predhet1", tag = "D") + 
+			theme(plot.title = element_text(face = "bold", size = rel(1.25)),
+						axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)),
+						legend.text = element_text(size = rel(1.1)))
+		g7.8 = ggplot(plot.df.2, aes(x=p, y=q, fill=plot.predn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "predn   ", tag = "")+
+			theme(axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)),
+						legend.text = element_text(size = rel(1.1)))
+
+
+		filename = paste(c(label,"-fig-sim-est-taylor.png"), collapse="")
+		res.factor = 3
+		png(filename, height = 1000*res.factor, width = 1000*res.factor, res = 72*res.factor)
+		grid.arrange(g7.1, g7.2, g7.3, g7.4, g7.5, g7.6, g7.7, g7.8, nrow = 4)
+		dev.off()
+
+		vnmax = max(max(plot.df.1$plot.simn),max(plot.df.2$plot.simn),max(plot.df.vhest.h$vn),max(plot.df$plot.predn))
+		vhmax = max(max(plot.df.1$plot.simhet),max(plot.df.2$plot.simhet),max(plot.df.vhest.h$vh))
+
+		# Color gradient comparing to asymmetric symmetric without network, i.e.,  (1/n)
+		#vhl = (1/n)/vhmax
+		
+		nullret = vhest(0,0,h.to.plot,n,prop.to.plot,Alpha[1],Beta[1])
+		# Color gradient to compare asymmetric to asymmetric without network, i.e., ((1-pc)/pc)*(1/n)
+		vhl = nullret[3]/vhmax
+		colfn = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
+							values = c(0,vhl/2,vhl,2*vhl,1),  limits = c(0,vhmax))
+
+		vnl = nullret[4]/vnmax
+		colfn2 = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
+								values = c(0,vnl/2,vnl,2*vnl,1), limits = c(0,vnmax))
+
+		g7.1 = ggplot(plot.df.1, aes(x=p, y=q, fill=plot.simhet)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "simhet  ", tag = "A") + 
+			theme(plot.title = element_text(face = "bold", size = rel(1.25)),
+						axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)),
+						legend.text = element_text(size = rel(1.1))) 
+		g7.2 = ggplot(plot.df.1, aes(x=p, y=q, fill=plot.simn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "simn    ", tag = "")+
+			theme(axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)),
+						legend.text = element_text(size = rel(1.1)))
+		g7.3 = ggplot(plot.df.2, aes(x=p, y =q, fill=plot.simhet)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "simhet  ", tag = "B") + 
+			theme(plot.title = element_text(face = "bold", size = rel(1.25)),
+						axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)),
+						legend.text = element_text(size = rel(1.1)))
+		g7.4 = ggplot(plot.df.2, aes(x=p, y =q, fill=plot.simn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "simn    ", tag = "")+
+			theme(axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)),
+						legend.text = element_text(size = rel(1.1)))
+		g7.5 = ggplot(plot.df.vhest.h, aes(x=p,y=q,fill=vh))+geom_tile()+colfn+facet_grid(h ~ seeds) + labs(fill = "esthet  ", tag = "C") + 
+			theme(plot.title = element_text(face = "bold", size = rel(1.25)),
+						axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)),
+						legend.text = element_text(size = rel(1.1)))
+		g7.6 = ggplot(plot.df.vhest.h, aes(x=p,y=q,fill=vn))+geom_tile()+colfn2+facet_grid(h ~ seeds) + labs(fill = "estn    ", tag = "")+
+			theme(axis.title = element_text(size = rel(1.25)),
+						strip.text = element_text(size = rel(1.25)),
+						legend.text = element_text(size = rel(1.1)))
+
+
+		filename = paste(c(label,"-fig-sim-est.png"), collapse="")
+		res.factor = 3
+		png(filename, height = 1000*res.factor, width = 1000*res.factor, res = 72*res.factor)
+		grid.arrange(g7.1, g7.2, g7.3, g7.4, g7.5, g7.6, nrow = 3)
+		dev.off()
 	}
-
-	vnmax = max(max(plot.df$plot.simn),max(plot.df.vhest$vn))
-	vhmax = max(max(plot.df$plot.simhet),max(plot.df.vhest$vh))
-
-	# Color gradient comparing to asymmetric symmetric without network, i.e.,  (1/n)
-	#vhl = (1/n)/vhmax
-
-	# Color gradient to compare asymmetric to asymmetric without network, i.e., ((1-pc)/pc)*(1/n)
-	vhl = ((1-pc)/pc)*(1/n)/vhmax
-	colfn = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
-						values = c(0,vhl/2,vhl,2*vhl,1),  limits = c(0,vhmax))
-
-	vnl = pc*(1-pc)*n/vnmax
-	colfn2 = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
-							values = c(0,vnl/2,vnl,2*vnl,1), limits = c(0,vnmax))
-
-
-	cat(paste0("vhmax = ", paste0(toString(round(vhmax,5)), "\n")))
-	cat(paste0("vnmax = ", paste0(toString(round(vnmax)), "\n")))
-
-	g6.1 = ggplot(plot.df, aes(x=p, y=q, fill=plot.simhet)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "simhet   ")+
-		theme(axis.title = element_text(size = rel(1.25)),
-					strip.text = element_text(size = rel(1.25)))
-	g6.2 = ggplot(plot.df, aes(x=p, y=q, fill=plot.simn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "simn     ")+
-		theme(axis.title = element_text(size = rel(1.25)),
-					strip.text = element_text(size = rel(1.25)))
-	p6.3 = ggplot(plot.df.vhest, aes(x=p,y=q,fill=vh))+geom_tile()+colfn+facet_grid(h ~ seeds) + labs(fill = "esthet   ")+
-		theme(axis.title = element_text(size = rel(1.25)),
-					strip.text = element_text(size = rel(1.25)))
-	p6.4 = ggplot(plot.df.vhest, aes(x=p,y=q,fill=vn))+geom_tile()+colfn2+facet_grid(h ~ seeds) + labs(fill = "estn     ")+
-		theme(axis.title = element_text(size = rel(1.25)),
-					strip.text = element_text(size = rel(1.25)))
-
-	filename = paste(c(label,"-fig-sim-vhest.png"),collapse="")
-	res.factor = 3
-	png(filename, height = 1000*res.factor, width = 1000*res.factor, res = 72*res.factor)
-	grid.arrange(g6.1, g6.2, p6.3, p6.4, ncol = 2)
-	dev.off()
-
-	plot.df.vhest.h = plot.df.vhest[plot.df.vhest$h == 0.5,]  
-	plot.df.1 = res.1.df[res.1.df$h == 0.1,]
-	plot.df.2 = res.1.df[res.1.df$h == 0.5,]
-
-	vnmax = max(max(plot.df.1$plot.simn),max(plot.df.2$plot.simn),max(plot.df.vhest.h$vn),max(plot.df$plot.predn))
-	vhmax = max(max(plot.df.1$plot.simhet),max(plot.df.2$plot.simhet),max(plot.df.vhest.h$vh),max(plot.df$plot.predhet1))
-
-	# Color gradient comparing to asymmetric symmetric without network, i.e.,  (1/n)
-	#vhl = (1/n)/vhmax
-
-	# Color gradient to compare asymmetric to asymmetric without network, i.e., ((1-pc)/pc)*(1/n)
-	vhl = ((1-pc)/pc)*(1/n)/vhmax
-	colfn = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
-						values = c(0,vhl/2,vhl,2*vhl,1),  limits = c(0,vhmax))
-
-	vnl = pc*(1-pc)*n/vnmax
-	colfn2 = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
-							values = c(0,vnl/2,vnl,2*vnl,1), limits = c(0,vnmax))
-
-	g7.1 = ggplot(plot.df.1, aes(x=p, y=q, fill=plot.simhet)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "simhet  ", tag = "A") + 
-		theme(plot.title = element_text(face = "bold", size = rel(1.25)),
-					axis.title = element_text(size = rel(1.25)),
-					strip.text = element_text(size = rel(1.25)),
-					legend.text = element_text(size = rel(1.1))) 
-	g7.2 = ggplot(plot.df.1, aes(x=p, y=q, fill=plot.simn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "simn    ", tag = "")+
-		theme(axis.title = element_text(size = rel(1.25)),
-					strip.text = element_text(size = rel(1.25)),
-					legend.text = element_text(size = rel(1.1)))
-	g7.3 = ggplot(plot.df.2, aes(x=p, y =q, fill=plot.simhet)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "simhet  ", tag = "B") + 
-		theme(plot.title = element_text(face = "bold", size = rel(1.25)),
-					axis.title = element_text(size = rel(1.25)),
-					strip.text = element_text(size = rel(1.25)),
-					legend.text = element_text(size = rel(1.1)))
-	g7.4 = ggplot(plot.df.2, aes(x=p, y =q, fill=plot.simn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "simn    ", tag = "")+
-		theme(axis.title = element_text(size = rel(1.25)),
-					strip.text = element_text(size = rel(1.25)),
-					legend.text = element_text(size = rel(1.1)))
-	g7.5 = ggplot(plot.df.vhest.h, aes(x=p,y=q,fill=vh))+geom_tile()+colfn+facet_grid(h ~ seeds) + labs(fill = "esthet  ", tag = "C") + 
-		theme(plot.title = element_text(face = "bold", size = rel(1.25)),
-					axis.title = element_text(size = rel(1.25)),
-					strip.text = element_text(size = rel(1.25)),
-					legend.text = element_text(size = rel(1.1)))
-	g7.6 = ggplot(plot.df.vhest.h, aes(x=p,y=q,fill=vn))+geom_tile()+colfn2+facet_grid(h ~ seeds) + labs(fill = "estn    ", tag = "")+
-		theme(axis.title = element_text(size = rel(1.25)),
-					strip.text = element_text(size = rel(1.25)),
-					legend.text = element_text(size = rel(1.1)))
-	g7.7 = ggplot(plot.df.2, aes(x=p, y=q, fill=plot.predhet1)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "predhet1", tag = "D") + 
-		theme(plot.title = element_text(face = "bold", size = rel(1.25)),
-					axis.title = element_text(size = rel(1.25)),
-					strip.text = element_text(size = rel(1.25)),
-					legend.text = element_text(size = rel(1.1)))
-	g7.8 = ggplot(plot.df.2, aes(x=p, y=q, fill=plot.predn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "predn   ", tag = "")+
-		theme(axis.title = element_text(size = rel(1.25)),
-					strip.text = element_text(size = rel(1.25)),
-					legend.text = element_text(size = rel(1.1)))
-
-	
-	filename = paste(c(label,"-fig-sim-est-taylor.png"), collapse="")
-	res.factor = 3
-	png(filename, height = 1000*res.factor, width = 1000*res.factor, res = 72*res.factor)
-	grid.arrange(g7.1, g7.2, g7.3, g7.4, g7.5, g7.6, g7.7, g7.8, nrow = 4)
-	dev.off()
 }
 

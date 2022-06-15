@@ -32,6 +32,9 @@ for(i in 1:nrow(to.plot)) {
 }
 
 res.factor = 3
-png("plotlambda.png", width=res.factor*600, height=res.factor*1000, res=72*res.factor)
-ggplot(plot.df, aes(x=lambda, y=Vhprime, colour=expt)) + geom_line() + theme(legend.position="none") + facet_grid(seeds ~ halo)
+png("plotlambda.png", width=res.factor*750, height=res.factor*300, res=72*res.factor)
+ggplot(plot.df, aes(x=lambda, y=Vhprime, colour=expt)) + geom_line() + theme(legend.position="none") + facet_grid(seeds ~ halo)+
+  theme(axis.text = element_text(size = rel(1.25)),
+        axis.title = element_text(size = rel(1.25)),
+        strip.text = element_text(size = rel(1.25)))
 dev.off()
