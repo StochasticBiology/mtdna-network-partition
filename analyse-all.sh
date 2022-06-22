@@ -75,7 +75,7 @@ Rscript compare-both-asymm.R output-symm.csv 1 100 50 0.5 0.500 symm-50
 Rscript plotlambda.R output-symm.csv
 
 # compile manuscript
-pdflatex writeup-rcg
-bibtex writeup-rcg
-pdflatex writeup-rcg
-pdflatex writeup-rcg
+pdflatex writeup-igj2
+bibtex writeup-igj2
+pdflatex writeup-igj2
+pdflatex writeup-igj2

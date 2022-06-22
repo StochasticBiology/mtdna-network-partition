@@ -6,14 +6,14 @@
 #include <string.h>
 
 #define RND drand48()
-#define PI 3.14159265359
+#define PI 3.1415927
 
 double BRANCH = 0.02; // branch probability per timestep
 double DELTA = 0.01;  // growth rate per timestep
 int MAXN = 10000;     // memory limit for number of network segments
 int MAXM = 100;       // number of mtDNAs
 double MASS = 50;     // required network mass
-int NSIM = 10000;      // number of simulations for each parameterisation
+//int NSIM = 10000;      // number of simulations for each parameterisation
 int NSTEPS = 100;     // number of gaussian steps to take after fragmentation (if this scheme is chosen)
 
 // structure to store summary statistics from a set of simulations
@@ -597,7 +597,7 @@ void GetStats(double *xs, double *ys, double *xe, double *ye, int n, double *mx,
   //printf("phi = %.3f, wn, mn, wc, mc = %i, %i, %i, %i, u = %.3f, total = %.3f\n", phi, *wn, *mn, *wc, *mc, *u, total);
 }
 // rather verbose function to compute summary statistics given outputs of NSIM simulations
-void ComputeStats(Stats *s, SumStats *ss)
+void ComputeStats(Stats *s, SumStats *ss, int NSIM)
 {
   double w, m, n;
   int i;
@@ -703,52 +703,56 @@ int main(int argc, char *argv[])
   SumStats ss;
   double prop, phi;
   int error, errorprop;
+  int NSIM, nsim;
   
   error = 1;
   errorprop = 1;
 
-  if(argc == 5 || argc == 9)
+  if(argc == 6 || argc == 10)
     {
-      if(argc == 5 && strcmp(argv[1], "--simulate\0") == 0)
+      if(argc == 6 && strcmp(argv[1], "--simulate\0") == 0)
 	{
 	  expt = 1;
 	  prop = atof(argv[2]);
 	  het = atof(argv[3]);
 	  nseed = atof(argv[4]);
+		nsim = atof(argv[5]);
 	  error = 0;
 	  errorprop = 0;
 	}
-      if(argc == 9 && strcmp(argv[1], "--snapshots\0") == 0)
+      if(argc == 10 && strcmp(argv[1], "--snapshots\0") == 0)
 	{
 	  expt = 0;
 	  error = 0;
-          errorprop = 0;
+		errorprop = 0;
 	  prop = atof(argv[2]);
 	  het = atof(argv[3]);
 	  nseed = atof(argv[4]);
-	  inc0 = atof(argv[5]);
-	  inc1 = atof(argv[6]);
-	  lambda = atof(argv[7]);
-	  halo = atof(argv[8]);
+		nsim = atof(argv[5]);
+	  inc0 = atof(argv[6]);
+	  inc1 = atof(argv[7]);
+	  lambda = atof(argv[8]);
+	  halo = atof(argv[9]);
 	}
     }
   
   if(error == 1)
     {
-      printf("Usage:\n  ./network-sim.ce --snapshots [prop] [h] [seeds] [p] [q] [lambda] [halo]\n    [provide cell snapshots and exit]\n");
+      printf("Usage:\n  ./network-sim.ce --snapshots [prop] [h] [seeds] [nsim] [p] [q] [lambda] [halo]\n    [provide cell snapshots and exit]\n");
       printf("  ./network.sim.ce --simulate [prop] [h] [seeds]\n    [simulate with prop = 0.50, h=0.5, seeds=16\n");
       return -1;
     }
   if(errorprop == 1)
   {
     printf("Usage:\n  ./network-sim.ce --snapshots [prop] [h] [seeds] [p] [q] [lambda] [halo]\n    [provide cell snapshots and exit]\n");
-    printf("  ./network.sim.ce --simulate [prop] [h] [seeds]\n    [simulate with prop = 0.50, h=0.5, seeds=16\n");
+    printf("  ./network.sim.ce --simulate [prop] [h] [seeds] [nsim] \n    [simulate nsim = 1000 with prop = 0.50, h=0.5, seeds=16\n");
     printf("Error: Requires 0<prop; please try again with a different prop [daughter cell proportion of the parent cell]\n");
     return -1;
   }
   if(prop>0.5) prop = prop - round(prop/0.5)*0.5; // subtract however many 0.5s by which prop exceeds the domain (0,0.5].
   
   phi = 2*PI*prop;
+  NSIM = nsim;
   
   perturbtype = 2;
   
@@ -850,7 +854,7 @@ int main(int argc, char *argv[])
 		      }
 		    }
 		  // compute summary statistics for this set of simulations
-		  ComputeStats(stats, &ss);
+		  ComputeStats(stats, &ss, NSIM);
 
 		  // output statistics for this set
 		  printf("Should print!\n");

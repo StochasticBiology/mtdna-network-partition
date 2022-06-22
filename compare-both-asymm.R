@@ -105,23 +105,28 @@ vhpred = function(alpha, beta, p, q, h, n, prop) {
   mw = (1-h)*n*(p*eu + (1-p)*pc)
   mm = h*n*(q*eu + (1-q)*pc)
   mh = mm/(mw+mm)
-
-  mn = mw+mm
-  vn = pc*(1-pc)*n + (p*(1-h)+q*h)*n*((p*(1-h)+q*h)*n - 1)*vu
-  
-  # derivatives of h for use in Taylor expansions
-  hm = (1-h)/(eu*n)
-  hw = -h/(eu*n) #XXX FIX
-  hmm = -2*(1-h)/(eu*eu*n*n)
-  hww = 2*h/(eu*eu*n*n)
-  hmw = 2*h/(eu*eu*n*n) - 2/(eu*n*n)
+	
+	# derivatives of h for use in Taylor expansions
+  #hm = (1-h)/(eu*n)
+  #hw = -h/(eu*n) #XXX FIX
+  #hmm = -2*(1-h)/(eu*eu*n*n)
+  #hww = 2*h/(eu*eu*n*n)
+  #hmw = 2*h/(eu*eu*n*n) - 2/(eu*n*n)
 
   # Derivatives with eu and pc
-  #hm  = (wn*eu+wc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
-  #hw  =-(mn*eu+mc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
-  #hmm =-2*(wn*eu+wc*pc)/((wn+mn)*eu+(wc+mc)*pc)^3
-  #hww = 2*(mn*eu+mc*pc)/((wn+mn)*eu+(wc+mc)*pc)^3
-  #hmw = ((mn-wn)*eu+(mc-wc)*pc)/((wn+mn)*eu+(wc+mc)*pc)^3
+  hm  = (wn*eu+wc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
+  hw =-(mn*eu+mc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
+  hmm =-2*(wn*eu+wc*pc)/((wn+mn)*eu+(wc+mc)*pc)^3
+  hww = 2*(mn*eu+mc*pc)/((wn+mn)*eu+(wc+mc)*pc)^3
+  hmw = ((mn-wn)*eu+(mc-wc)*pc)/((wn+mn)*eu+(wc+mc)*pc)^3
+	
+	#if(hm != hm2 | hw != hw2 | hmm != hmm2 | hmw != hmw2 | hww != hww2){
+	#	cat(sprintf("(h,pc,eu) = (%.2f,%.5f,%.5f) \n", h,pc,eu))
+	#	stop(sprintf("Derivatives (hm,hw,hmm,hmw,hww): (%.5f,%.5f,%.5f,%.5f,%.5f) and (%.5f,%.5f,%.5f,%.5f,%.5f)\n", hm,hw,hmm,hmw,hww,hm2,hw2,hmm2,hmw2,hww2))
+	#}
+	
+  mn = mw+mm
+  vn = pc*(1-pc)*n + (p*(1-h)+q*h)*n*((p*(1-h)+q*h)*n - 1)*vu
   
   kappa = p*(1-h)+q*h
 
@@ -147,7 +152,6 @@ vhpredrepel = function(alpha, beta, p, q, h, n, prop) {
   eu = alpha/(alpha+beta)
   vu = (alpha*beta)/((alpha+beta)^2*(alpha+beta+1))
   pc = prop
-  l = 0.01
 
   # E(U^2)
   eu2 = alpha*(1+alpha) / ((alpha+beta)*(alpha+beta+1))
@@ -176,10 +180,10 @@ vhpredrepel = function(alpha, beta, p, q, h, n, prop) {
   mh = mm/(mw+mm)
 
   # derivatives of h for use in Taylor expansions
-  hm = (1-h)/(eu*n)
-  hw = -h/(eu*n)
-  #hm = (wn*eu+wc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
-  #hw =-(mn*eu+mc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
+  #hm = (1-h)/(eu*n)
+  #hw = -h/(eu*n)
+  hm = (wn*eu+wc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
+  hw =-(mn*eu+mc*pc)/((wn+mn)*eu+(wc+mc)*pc)^2
 
   # first-order
   v1 = hm*hm*vm + hw*hw*vw + 2*hw*hm*cwm
@@ -320,15 +324,21 @@ cat("Plotting summaries...\n")
 
 # plot simulation-theory comparison for first-order (1) and second-order (2) models
 if(repel){
-	g1.1 = ggplot(res.1.df, aes(x=vhsim, y=vhpred1, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + ggtitle("Physical sim vs first-order theory")
+	g1.1 = ggplot(res.1.df, aes(x=vhsim, y=vhpred1, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + 
+			ggtitle("Physical sim vs first-order theory") + labs(color = "Het., h")
 	#g1.2 = ggplot(res.1.df, aes(x=vhsim, y=vhpred2, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + ggtitle("Physical sim vs second-order theory")
-	g1.3 = ggplot(res.1.df, aes(x=vnsim, y=vnpred, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + ggtitle("Physical sim vs theory")	
+	g1.3 = ggplot(res.1.df, aes(x=vnsim, y=vnpred, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + 
+			ggtitle("Physical sim vs theory") + labs(color = "Het., h")
 } else {
-	g1.1 = ggplot(res.1.df, aes(x=vhsim, y=vhpred1, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + ggtitle("Physical sim vs first-order theory")
-	g1.2 = ggplot(res.1.df, aes(x=vhsim, y=vhpred2, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + ggtitle("Physical sim vs second-order theory")
-	g1.3 = ggplot(res.1.df, aes(x=vnsim, y=vnpred, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + ggtitle("Physical sim vs theory")
+	g1.1 = ggplot(res.1.df, aes(x=vhsim, y=vhpred1, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) +
+			ggtitle("Physical sim vs first-order theory") + labs(color = "Het., h")
+	g1.2 = ggplot(res.1.df, aes(x=vhsim, y=vhpred2, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) +
+			ggtitle("Physical sim vs second-order theory") + labs(color = "Het., h")
+	g1.3 = ggplot(res.1.df, aes(x=vnsim, y=vnpred, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) +
+			ggtitle("Physical sim vs theory") + labs(color = "Het., h")
 }
 
+ax.ticks.size = 1.2
 
 # tile plots
 res.1.df$plot.simhet = res.1.df$vhsim/(res.1.df$h*(1-res.1.df$h))
@@ -341,6 +351,9 @@ plot.h = h.to.plot
 plot.prop = prop.to.plot
 plot.df = res.1.df[res.1.df$h==plot.h & res.1.df$prop==plot.prop,]
 
+plot.df$seeds = factor(plot.df$seeds, levels = c(4,16,64), labels = paste("Seeds, s = ",c(4,16,64)))
+plot.df$h = factor(plot.df$h, levels = c(0.1,0.5), labels = paste("Het., h = ", c(0.1,0.5)))
+
 vhsimmax = max(plot.df$plot.simhet)
 vhpredmax = max(c(max(plot.df$plot.predhet1),max(plot.df$plot.predhet2)))
 vnsimmax = max(plot.df$plot.simn)
@@ -352,6 +365,7 @@ cat(paste0("vh max sim = ", paste0(toString(round(vhsimmax,3)),"\n")))
 cat(paste0("vn max sim = ", paste0(toString(round(vnsimmax)),"\n")))
 cat(paste0("vh max pred = ", paste0(toString(round(vhpredmax,3)),"\n")))
 cat(paste0("vn max pred = ", paste0(toString(round(vnpredmax)),"\n")))
+
 
 if(repel){
 	vnmax = max(c(max(plot.df$plot.simn),max(plot.df$plot.predn)))
@@ -370,11 +384,13 @@ if(repel){
 							values = c(0,vnl/2,vnl,2*vnl,1), limits = c(0,vnmax))
 	
 	g3.1 = ggplot(plot.df, aes(x=p, y=q, fill=plot.simhet)) + geom_tile() + colfn + facet_wrap( ~ seeds)+
-		theme(axis.title = element_text(size = rel(1.25)),
-		strip.text = element_text(size = rel(1.25)))
+		theme(axis.title = element_text(size = rel(ax.ticks.size)),
+		strip.text = element_text(size = rel(ax.ticks.size)))+
+	  labs(fill = "V'(h)")
 	g3.2 = ggplot(plot.df, aes(x=p, y=q, fill=plot.predhet1)) + geom_tile() + colfn + facet_wrap( ~ seeds)+
-		theme(axis.title = element_text(size = rel(1.25)),
-		strip.text = element_text(size = rel(1.25)))	
+		theme(axis.title = element_text(size = rel(ax.ticks.size)),
+		strip.text = element_text(size = rel(ax.ticks.size)))	+
+	  labs(fill = "V'(h)")
 } else {
 	vnmax = max(c(max(plot.df$plot.simn),max(plot.df$plot.predn)))
 	vhmax = max(c(max(plot.df$plot.simhet),max(plot.df$plot.predhet1),max(plot.df$plot.predhet2)))
@@ -393,14 +409,17 @@ if(repel){
 	
 	
 	g3.1 = ggplot(plot.df, aes(x=p, y=q, fill=plot.simhet)) + geom_tile() + colfn + facet_wrap( ~ seeds)+
-		theme(axis.title = element_text(size = rel(1.25)),
-		strip.text = element_text(size = rel(1.25)))
+		theme(axis.title = element_text(size = rel(ax.ticks.size)),
+		strip.text = element_text(size = rel(ax.ticks.size)))+
+	  labs(fill = "V'(h)")
 	g3.2 = ggplot(plot.df, aes(x=p, y=q, fill=plot.predhet1)) + geom_tile() + colfn + facet_wrap( ~ seeds)+
-		theme(axis.title = element_text(size = rel(1.25)),
-		strip.text = element_text(size = rel(1.25)))
+		theme(axis.title = element_text(size = rel(ax.ticks.size)),
+		strip.text = element_text(size = rel(ax.ticks.size)))+
+	  labs(fill = "V'(h)")
 	g3.3 = ggplot(plot.df, aes(x=p, y=q, fill=plot.predhet2)) + geom_tile() + colfn + facet_wrap( ~ seeds)+
-		theme(axis.title = element_text(size = rel(1.25)),
-		strip.text = element_text(size = rel(1.25)))
+		theme(axis.title = element_text(size = rel(ax.ticks.size)),
+		strip.text = element_text(size = rel(ax.ticks.size)))+
+	  labs(fill = "V'(h)")
 }
 
 filename = paste(c(label, "-vh-stats-", ifelse(repel, "repel.png", "no-repel.png")), collapse="")
@@ -436,11 +455,13 @@ colfn2 = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
 						values = c(0,vnl/2,vnl,2*vnl,1), limits = c(0,vnmax))
 
 g4.1 = ggplot(plot.df, aes(x=p, y=q, fill=plot.simn)) + geom_tile() + colfn2 + facet_wrap(~ seeds)+
-		theme(axis.title = element_text(size = rel(1.25)),
-		strip.text = element_text(size = rel(1.25)))
+		theme(axis.title = element_text(size = rel(ax.ticks.size)),
+		strip.text = element_text(size = rel(ax.ticks.size)))+
+	  labs(fill = "V(N)")
 g4.2 = ggplot(plot.df, aes(x=p, y=q, fill=plot.predn)) + geom_tile() + colfn2 + facet_wrap(~ seeds)+
-		theme(axis.title = element_text(size = rel(1.25)),
-		strip.text = element_text(size = rel(1.25)))
+		theme(axis.title = element_text(size = rel(ax.ticks.size)),
+		strip.text = element_text(size = rel(ax.ticks.size)))+
+	  labs(fill = "V(N)")
 
 res.factor = 3
 filename = paste(c(label, "-vn-stats-", ifelse(repel, "repel.png", "no-repel.png")), collapse="")
@@ -449,6 +470,8 @@ grid.arrange(g4.1, g4.2, nrow=2)
 dev.off()
 
 plot.df = res.1.df
+plot.df$seeds = factor(plot.df$seeds, levels = c(4,16,64), labels = paste("Seeds, s = ",c(4,16,64)))
+plot.df$h = factor(plot.df$h, levels = c(0.1,0.5), labels = paste("Het., h = ", c(0.1,0.5)))
 
 vnmax = max(c(max(plot.df$plot.simn),max(plot.df$plot.predn)))
 vhmax = max(c(max(plot.df$plot.simhet),max(plot.df$plot.predhet1)))
@@ -468,40 +491,52 @@ colfn2 = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
 if(repel){
 	# Plot simulation results (5.1, 5.2) and predictions (5.3,5.4) separately for repulsive case?
 	 g5.1 = ggplot(plot.df, aes(x=p, y=q, fill=plot.simhet)) + geom_tile() + colfn + facet_grid(h ~ seeds)+
-						 theme(axis.title = element_text(size = rel(1.25)),
-									 strip.text = element_text(size = rel(1.25)))
+						 theme(axis.title = element_text(size = rel(ax.ticks.size)),
+									 strip.text = element_text(size = rel(ax.ticks.size)))+
+						 labs(fill = "V'(h)")
 	 g5.2 = ggplot(plot.df, aes(x=p, y=q, fill=plot.simn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds)+
-						 theme(axis.title = element_text(size = rel(1.25)),
-									 strip.text = element_text(size = rel(1.25)))
+						 theme(axis.title = element_text(size = rel(ax.ticks.size)),
+									 strip.text = element_text(size = rel(ax.ticks.size)))+
+						 labs(fill = "V(N)")
 	 g5.3 = ggplot(plot.df, aes(x=p, y=q, fill=plot.predhet1)) + geom_tile() + colfn + facet_grid(h ~ seeds)+
-	 					 theme(axis.title = element_text(size = rel(1.25)),
-	 								 strip.text = element_text(size = rel(1.25)))
+	 					 theme(axis.title = element_text(size = rel(ax.ticks.size)),
+	 								 strip.text = element_text(size = rel(ax.ticks.size)))+
+						 labs(fill = "V'(h)")
 	 g5.4 = ggplot(plot.df, aes(x=p, y=q, fill=plot.predn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds)+
-	 					 theme(axis.title = element_text(size = rel(1.25)),
-	 								 strip.text = element_text(size = rel(1.25)))
+	 					 theme(axis.title = element_text(size = rel(ax.ticks.size)),
+	 								 strip.text = element_text(size = rel(ax.ticks.size)))+
+						 labs(fill = "V(N)")
 
 	 res.factor = 3
-	 filename = paste(c(label, "-both-stats-", "repel.png"), collapse="")
+	 filename = paste(c(label, "-both-stats-sim-", "repel.png"), collapse="")
 	 png(filename, width=1000*res.factor, height=400*res.factor, res=72*res.factor)
 	 grid.arrange(g5.1, g5.2, nrow=1)
 	 dev.off()
-	 filename = paste(c(label, "-both-stats-taylor-", "repel.png"), collapse="")
+	 filename = paste(c(label, "-both-stats-sim-taylor-", "repel.png"), collapse="")
+	 png(filename, width=1000*res.factor, height=800*res.factor, res=72*res.factor)
+	 grid.arrange(g5.1, g5.2, g5.3, g5.4, nrow=2)
+	 dev.off()
+	filename = paste(c(label, "-both-stats-taylor-", "repel.png"), collapse="")
 	 png(filename, width=1000*res.factor, height=400*res.factor, res=72*res.factor)
 	 grid.arrange(g5.3, g5.4, nrow=1)
 	 dev.off()
 }else{
 	 g5.1 = ggplot(plot.df, aes(x=p, y=q, fill=plot.simhet)) + geom_tile() + colfn + facet_grid(h ~ seeds)+
-		 theme(axis.title = element_text(size = rel(1.25)),
-		 strip.text = element_text(size = rel(1.25)))
+		 theme(axis.title = element_text(size = rel(ax.ticks.size)),
+		 strip.text = element_text(size = rel(ax.ticks.size)))+
+						 labs(fill = "V'(h)")
 	 g5.2 = ggplot(plot.df, aes(x=p, y=q, fill=plot.simn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds)+
-		 theme(axis.title = element_text(size = rel(1.25)),
-		 strip.text = element_text(size = rel(1.25)))
+		 theme(axis.title = element_text(size = rel(ax.ticks.size)),
+		 strip.text = element_text(size = rel(ax.ticks.size)))+
+						 labs(fill = "V(N)")
 	 g5.3 = ggplot(plot.df, aes(x=p, y=q, fill=plot.predhet1)) + geom_tile() + colfn + facet_grid(h ~ seeds)+
-		 theme(axis.title = element_text(size = rel(1.25)),
-			strip.text = element_text(size = rel(1.25)))
+		 theme(axis.title = element_text(size = rel(ax.ticks.size)),
+			strip.text = element_text(size = rel(ax.ticks.size)))+
+						 labs(fill = "V'(h)")
 	 g5.4 = ggplot(plot.df, aes(x=p, y=q, fill=plot.predn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds)+
-		 theme(axis.title = element_text(size = rel(1.25)),
-		 strip.text = element_text(size = rel(1.25)))
+		 theme(axis.title = element_text(size = rel(ax.ticks.size)),
+		 strip.text = element_text(size = rel(ax.ticks.size)))+
+						 labs(fill = "V(N)")
 
 	 res.factor = 3
 	 filename = paste(c(label, "-both-stats-","no-repel.png"), collapse="")
@@ -518,8 +553,16 @@ cat("Plotting moments...\n")
 stats = colnames(test.df[,8:ncol(test.df)])
 if(repel == F) {
 	stats.to.plot = stats[stats!="md"&stats!="vd"&stats!="dc"]
+	stats.to.plot.labs = 
+    c("E(W)", "V(W)", "E(M)", "V(M)", "Cov(W,M)", paste("Cov(",expression(W^2),",M)"), paste("Cov(",expression(W^3),",M)"),
+			 paste("Cov(W,",expression(M^2),")"), paste("Cov(W,",expression(M^3),")"), paste("Cov(",expression(W^2),",",expression(M^2),")"),
+			 paste(expression(mu[3]),"(W)"), paste(expression(mu[3]),"(M)"), paste(expression(mu[4]),"(W)"), paste(expression(mu[4]),"(M)"),
+			 "E(h)" ,"V(h)" , "E(U)", "V(U)","E(N)","V(N)") # new labs
+	names(stats.to.plot.labs) = stats.to.plot # original labs
 } else {
 	stats.to.plot = c("mw", "mm", "vw", "vm", "mn", "vn", "cwm", "mh", "vh", "vu")
+	stats.to.plot.labs = c("E(W)", "E(M)", "V(W)", "V(M)", "E(N)","V(N)", "Cov(W,M)", "E(h)" ,"V(h)" ,"V(U)")# new labs
+  names(stats.to.plot.labs) = stats.to.plot # original labs
 }
 mom.df = data.frame()
 
@@ -545,10 +588,12 @@ for(i in 1:nrow(test.df)) {
 
 filename = paste(c(label, "-moments-", ifelse(repel, "repel.png", "no-repel.png")), collapse="")
 png(filename, width=1000*res.factor, height=1000*res.factor, res=72*res.factor)
-ggplot(mom.df, aes(x=predval,y=simval,colour=factor(prop))) + geom_point() + geom_abline(slope=1, intercept=0) + facet_wrap(~stat, scales="free")+
-	theme(axis.title = element_text(size = rel(1.25)),
-	strip.text = element_text(size = rel(1.25)),
-	legend.text = element_text(size = rel(1.25)))
+ggplot(mom.df, aes(x=predval,y=simval,colour=factor(prop))) + geom_point() + geom_abline(slope=1, intercept=0) +
+	facet_wrap(~stat, scales="free", labeller = labeller(stat = stats.to.plot.labs, .default = label_parsed))+
+	labs(colour = "Prop", x = "Predicted value", y = "Simulated value")+
+	theme(axis.title = element_text(size = rel(ax.ticks.size)),
+	strip.text = element_text(size = rel(ax.ticks.size)),
+	legend.text = element_text(size = rel(ax.ticks.size)))
 dev.off()
 
 ############### compare statistical simulation output to theory
@@ -599,35 +644,43 @@ for(alpha in Alpha) {
 }
 cat("Plotting comparisons...\n")
 
+res.2.df$alpha = factor(res.2.df$alpha, levels = Alpha, labels = paste('α = ',Alpha))
+res.2.df$n = factor(res.2.df$n, levels = c(20,50,100), labels = paste('n = ',c(20,50,100)))
+
 # plot simulation-theory comparison for first-order (1) and second-order (2) models
 if(repel){
-	g2.1 = ggplot(res.2.df, aes(x=vhsim, y=vhpred1, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + facet_grid(alpha ~ n) +
-	ggtitle("Stat sim vs first-order theory") +
-	theme(axis.title = element_text(size = rel(1.25)),
-				strip.text = element_text(size = rel(1.25)),
-				legend.text = element_text(size = rel(1.25)))
+	g2.1 = ggplot(res.2.df, aes(x=vhsim, y=vhpred1, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) +
+		facet_grid(alpha ~ n) + labs(color = "Het., h") +
+		ggtitle("Stat sim vs first-order theory") +
+		theme(axis.title = element_text(size = rel(ax.ticks.size)),
+				strip.text = element_text(size = rel(ax.ticks.size)),
+				legend.text = element_text(size = rel(ax.ticks.size)))
 	#g2.2 = ggplot(res.2.df, aes(x=vhsim, y=vhpred2, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + facet_grid(alpha ~ n) + ggtitle("Stat sim vs second-order theory")
-	g2.3 = ggplot(res.2.df, aes(x=vnsim, y=vnpred, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + facet_grid(alpha ~ n) + 
-	ggtitle("Stat sim vs theory")+
-	theme(axis.title = element_text(size = rel(1.25)), 
-				strip.text = element_text(size = rel(1.25)),
-				legend.text = element_text(size = rel(1.25)))
+	g2.3 = ggplot(res.2.df, aes(x=vnsim, y=vnpred, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) +
+					facet_grid(alpha ~ n) +  labs(color = "Het., h") +
+					ggtitle("Stat sim vs theory")+
+					theme(axis.title = element_text(size = rel(ax.ticks.size)), 
+								strip.text = element_text(size = rel(ax.ticks.size)),
+								legend.text = element_text(size = rel(ax.ticks.size)))
 } else {
-	g2.1 = ggplot(res.2.df, aes(x=vhsim, y=vhpred1, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + facet_grid(alpha ~ n) +
-	ggtitle("Stat sim vs first-order theory")+
-	theme(axis.title = element_text(size = rel(1.25)),
-				strip.text = element_text(size = rel(1.25)),
-				legend.text = element_text(size = rel(1.25)))
-	g2.2 = ggplot(res.2.df, aes(x=vhsim, y=vhpred2, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + facet_grid(alpha ~ n) +
-	ggtitle("Stat sim vs second-order theory")+
-	theme(axis.title = element_text(size = rel(1.25)),
-				strip.text = element_text(size = rel(1.25)),
-				legend.text = element_text(size = rel(1.25)))
-	g2.3 = ggplot(res.2.df, aes(x=vnsim, y=vnpred, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + facet_grid(alpha ~ n) +
-	ggtitle("Stat sim vs theory")+
-	theme(axis.title = element_text(size = rel(1.25)),
-				strip.text = element_text(size = rel(1.25)),
-				legend.text = element_text(size = rel(1.25)))
+	g2.1 = ggplot(res.2.df, aes(x=vhsim, y=vhpred1, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) +
+					facet_grid(alpha ~ n) +  labs(color = "Het., h") +
+					ggtitle("Stat sim vs first-order theory")+
+					theme(axis.title = element_text(size = rel(ax.ticks.size)),
+								strip.text = element_text(size = rel(ax.ticks.size)),
+								legend.text = element_text(size = rel(ax.ticks.size)))
+	g2.2 = ggplot(res.2.df, aes(x=vhsim, y=vhpred2, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + 
+					facet_grid(alpha ~ n) +  labs(color = "Het., h") +
+					ggtitle("Stat sim vs second-order theory")+
+					theme(axis.title = element_text(size = rel(ax.ticks.size)),
+								strip.text = element_text(size = rel(ax.ticks.size)),
+								legend.text = element_text(size = rel(ax.ticks.size)))
+	g2.3 = ggplot(res.2.df, aes(x=vnsim, y=vnpred, color=factor(h))) + geom_point() + geom_abline(slope=1, intercept=0) + 
+					facet_grid(alpha ~ n) +  labs(color = "Het., h") +
+					ggtitle("Stat sim vs theory")+
+					theme(axis.title = element_text(size = rel(ax.ticks.size)),
+								strip.text = element_text(size = rel(ax.ticks.size)),
+								legend.text = element_text(size = rel(ax.ticks.size)))
 }
 res.factor = 3
 filename = paste(c(label, "-sim-theory-comparison-", ifelse(repel, "repel.png", "no-repel.png")), collapse="")
@@ -668,7 +721,12 @@ if(length(unique(res.1.df$h))>1){
 				}
 			}
 		}
-
+		
+		plot.df.vhest.h = plot.df.vhest[plot.df.vhest$h == 0.5,]
+		
+		plot.df.vhest$seeds = factor(plot.df.vhest$seeds, levels = c(4,16,64), labels = paste("Seeds, s = ", c(4,16,64)))
+		plot.df.vhest$h = factor(plot.df.vhest$h, levels = c(0.1,0.5), labels = paste("Het., h = ", c(0.1,0.5)))
+		
 		vnmax = max(max(plot.df$plot.simn),max(plot.df.vhest$vn))
 		vhmax = max(max(plot.df$plot.simhet),max(plot.df.vhest$vh))
 
@@ -686,31 +744,44 @@ if(length(unique(res.1.df$h))>1){
 		cat(paste0("vhmax = ", paste0(toString(round(vhmax,5)), "\n")))
 		cat(paste0("vnmax = ", paste0(toString(round(vnmax)), "\n")))
 
-		g6.1 = ggplot(plot.df, aes(x=p, y=q, fill=plot.simhet)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "simhet   ")+
-			theme(axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)))
-		g6.2 = ggplot(plot.df, aes(x=p, y=q, fill=plot.simn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "simn     ")+
-			theme(axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)))
-		p6.3 = ggplot(plot.df.vhest, aes(x=p,y=q,fill=vh))+geom_tile()+colfn+facet_grid(h ~ seeds) + labs(fill = "esthet   ")+
-			theme(axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)))
-		p6.4 = ggplot(plot.df.vhest, aes(x=p,y=q,fill=vn))+geom_tile()+colfn2+facet_grid(h ~ seeds) + labs(fill = "estn     ")+
-			theme(axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)))
+		g6.1 = ggplot(plot.df, aes(x=p, y=q, fill=plot.simhet)) + geom_tile() + colfn + 
+						facet_grid(h ~ seeds) + labs(fill = "V'(h)")+
+						theme(axis.title = element_text(size = rel(ax.ticks.size)),
+									strip.text = element_text(size = rel(ax.ticks.size)))
+		g6.2 = ggplot(plot.df, aes(x=p, y=q, fill=plot.simn)) + geom_tile() + colfn2 +
+						facet_grid(h ~ seeds) + labs(fill = "V(N)")+
+						theme(axis.title = element_text(size = rel(ax.ticks.size)),
+									strip.text = element_text(size = rel(ax.ticks.size)))
+		p6.3 = ggplot(plot.df.vhest, aes(x=p,y=q,fill=vh))+geom_tile() + colfn + 
+						facet_grid(h ~ seeds) + labs(fill = "V'(h)")+
+						theme(axis.title = element_text(size = rel(ax.ticks.size)),
+									strip.text = element_text(size = rel(ax.ticks.size)))
+		p6.4 = ggplot(plot.df.vhest, aes(x=p,y=q,fill=vn))+geom_tile() + colfn2 +
+						facet_grid(h ~ seeds) + labs(fill = "V(N)")+
+						theme(axis.title = element_text(size = rel(ax.ticks.size)),
+									strip.text = element_text(size = rel(ax.ticks.size)))
 
 		filename = paste(c(label,"-fig-sim-est.png"),collapse="")
 		res.factor = 3
 		png(filename, height = 1000*res.factor, width = 1000*res.factor, res = 72*res.factor)
 		grid.arrange(g6.1, g6.2, p6.3, p6.4, ncol = 2)
 		dev.off()
+		
+		plot.df = res.1.df
+		plot.df.1 = plot.df[plot.df$h == 0.1,]
+		plot.df.2 = plot.df[plot.df$h == 0.5,]
+		
+		plot.df.1$h = factor(plot.df.1$h, levels = 0.1, labels = "Het., h = 0.1")
+		plot.df.1$seeds = factor(plot.df.1$seeds, levels = c(4,16,64), labels = paste("Seeds, s = ", c(4,16,64)))
+		plot.df.2$h = factor(plot.df.2$h, levels = 0.5, labels = "Het., h = 0.5")
+ 	  plot.df.2$seeds = factor(plot.df.2$seeds, levels = c(4,16,64), labels = paste("Seeds, s = ", c(4,16,64)))
+														 
+	  plot.df.vhest.h$h = factor(plot.df.vhest.h$h, levels = 0.5, labels = "Het., h = 0.5")
+ 	  plot.df.vhest.h$seeds = factor(plot.df.vhest.h$seeds, levels = c(4,16,64), labels = paste("Seeds, s = ", c(4,16,64)))
+		
 
-		plot.df.vhest.h = plot.df.vhest[plot.df.vhest$h == 0.5,]  
-		plot.df.1 = res.1.df[res.1.df$h == 0.1,]
-		plot.df.2 = res.1.df[res.1.df$h == 0.5,]
-
-		vnmax = max(max(plot.df.1$plot.simn),max(plot.df.2$plot.simn),max(plot.df.vhest.h$vn),max(plot.df$plot.predn))
-		vhmax = max(max(plot.df.1$plot.simhet),max(plot.df.2$plot.simhet),max(plot.df.vhest.h$vh),max(plot.df$plot.predhet1))
+		vnmax = max(max(plot.df.1$plot.simn),max(plot.df.2$plot.simn),max(plot.df.vhest.h$vn),max(plot.df.2$plot.predn))
+		vhmax = max(max(plot.df.1$plot.simhet),max(plot.df.2$plot.simhet),max(plot.df.vhest.h$vh),max(plot.df.2$plot.predhet1))
 
 		nullret = vhest(0,0,h.to.plot,n,prop.to.plot,Alpha[1],Beta[1])
 		# Color gradient to compare asymmetric to asymmetric without network, i.e., ((1-pc)/pc)*(1/n)
@@ -722,99 +793,64 @@ if(length(unique(res.1.df$h))>1){
 		colfn2 = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
 								values = c(0,vnl/2,vnl,2*vnl,1), limits = c(0,vnmax))
 
-		g7.1 = ggplot(plot.df.1, aes(x=p, y=q, fill=plot.simhet)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "simhet  ", tag = "A") + 
-			theme(plot.title = element_text(face = "bold", size = rel(1.25)),
-						axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)),
-						legend.text = element_text(size = rel(1.1))) 
-		g7.2 = ggplot(plot.df.1, aes(x=p, y=q, fill=plot.simn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "simn    ", tag = "")+
-			theme(axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)),
-						legend.text = element_text(size = rel(1.1)))
-		g7.3 = ggplot(plot.df.2, aes(x=p, y =q, fill=plot.simhet)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "simhet  ", tag = "B") + 
-			theme(plot.title = element_text(face = "bold", size = rel(1.25)),
-						axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)),
-						legend.text = element_text(size = rel(1.1)))
-		g7.4 = ggplot(plot.df.2, aes(x=p, y =q, fill=plot.simn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "simn    ", tag = "")+
-			theme(axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)),
-						legend.text = element_text(size = rel(1.1)))
-		g7.5 = ggplot(plot.df.vhest.h, aes(x=p,y=q,fill=vh))+geom_tile()+colfn+facet_grid(h ~ seeds) + labs(fill = "esthet  ", tag = "C") + 
-			theme(plot.title = element_text(face = "bold", size = rel(1.25)),
-						axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)),
-						legend.text = element_text(size = rel(1.1)))
-		g7.6 = ggplot(plot.df.vhest.h, aes(x=p,y=q,fill=vn))+geom_tile()+colfn2+facet_grid(h ~ seeds) + labs(fill = "estn    ", tag = "")+
-			theme(axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)),
-						legend.text = element_text(size = rel(1.1)))
-		g7.7 = ggplot(plot.df.2, aes(x=p, y=q, fill=plot.predhet1)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "predhet1", tag = "D") + 
-			theme(plot.title = element_text(face = "bold", size = rel(1.25)),
-						axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)),
-						legend.text = element_text(size = rel(1.1)))
-		g7.8 = ggplot(plot.df.2, aes(x=p, y=q, fill=plot.predn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "predn   ", tag = "")+
-			theme(axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)),
-						legend.text = element_text(size = rel(1.1)))
+		g7.1 = ggplot(plot.df.1, aes(x=p, y=q, fill=plot.simhet)) + geom_tile() + colfn +
+						facet_grid(h ~ seeds) +
+						labs(fill = "V'(h)", tag = "A") + 
+						theme(plot.title = element_text(face = "bold", size = rel(ax.ticks.size)),
+									axis.title = element_text(size = rel(ax.ticks.size)),
+									strip.text = element_text(size = rel(ax.ticks.size)),
+									legend.text = element_text(size = rel(ax.ticks.size))) 
+		g7.2 = ggplot(plot.df.1, aes(x=p, y=q, fill=plot.simn)) + geom_tile() + colfn2 +
+						facet_grid(h ~ seeds) +
+						labs(fill = "V(N)", tag = "")+
+						theme(axis.title = element_text(size = rel(ax.ticks.size)),
+									strip.text = element_text(size = rel(ax.ticks.size)),
+									legend.text = element_text(size = rel(ax.ticks.size)))
+		g7.3 = ggplot(plot.df.2, aes(x=p, y =q, fill=plot.simhet)) + geom_tile() + colfn +
+						facet_grid(h ~ seeds) +
+						labs(fill = "V'(h)", tag = "B") + 
+						theme(plot.title = element_text(face = "bold", size = rel(ax.ticks.size)),
+									axis.title = element_text(size = rel(ax.ticks.size)),
+									strip.text = element_text(size = rel(ax.ticks.size)),
+									legend.text = element_text(size = rel(ax.ticks.size)))
+		g7.4 = ggplot(plot.df.2, aes(x=p, y =q, fill=plot.simn)) + geom_tile() + colfn2 +
+						facet_grid(h ~ seeds) +
+						labs(fill = "V(N)", tag = "")+
+						theme(axis.title = element_text(size = rel(ax.ticks.size)),
+									strip.text = element_text(size = rel(ax.ticks.size)),
+									legend.text = element_text(size = rel(ax.ticks.size)))
+		g7.5 = ggplot(plot.df.vhest.h, aes(x=p,y=q,fill=vh))+geom_tile() + colfn +
+						facet_grid(h ~ seeds) +
+						labs(fill = "V'(h)", tag = "C") + 
+						theme(plot.title = element_text(face = "bold", size = rel(ax.ticks.size)),
+									axis.title = element_text(size = rel(ax.ticks.size)),
+									strip.text = element_text(size = rel(ax.ticks.size)),
+									legend.text = element_text(size = rel(ax.ticks.size)))
+		g7.6 = ggplot(plot.df.vhest.h, aes(x=p,y=q,fill=vn))+geom_tile() + colfn2 +
+						facet_grid(h ~ seeds) +
+						labs(fill = "V(N)", tag = "")+
+						theme(axis.title = element_text(size = rel(ax.ticks.size)),
+									strip.text = element_text(size = rel(ax.ticks.size)),
+									legend.text = element_text(size = rel(ax.ticks.size)))
+		g7.7 = ggplot(plot.df.2, aes(x=p, y=q, fill=plot.predhet1)) + geom_tile() + colfn +
+						facet_grid(h ~ seeds) +
+						labs(fill = "V'(h)", tag = "D") + 
+						theme(plot.title = element_text(face = "bold", rel(ax.ticks.size)),
+									axis.title = element_text(size = rel(ax.ticks.size)),
+									strip.text = element_text(size = rel(ax.ticks.size)),
+									legend.text = element_text(size = rel(ax.ticks.size)))
+		g7.8 = ggplot(plot.df.2, aes(x=p, y=q, fill=plot.predn)) + geom_tile() + colfn2 +
+						facet_grid(h ~ seeds) +
+						labs(fill = "V(N)", tag = "")+
+						theme(axis.title = element_text(size = rel(ax.ticks.size)),
+									strip.text = element_text(size = rel(ax.ticks.size)),
+									legend.text = element_text(size = rel(ax.ticks.size)))
 
 
 		filename = paste(c(label,"-fig-sim-est-taylor.png"), collapse="")
 		res.factor = 3
 		png(filename, height = 1000*res.factor, width = 1000*res.factor, res = 72*res.factor)
 		grid.arrange(g7.1, g7.2, g7.3, g7.4, g7.5, g7.6, g7.7, g7.8, nrow = 4)
-		dev.off()
-
-		vnmax = max(max(plot.df.1$plot.simn),max(plot.df.2$plot.simn),max(plot.df.vhest.h$vn),max(plot.df$plot.predn))
-		vhmax = max(max(plot.df.1$plot.simhet),max(plot.df.2$plot.simhet),max(plot.df.vhest.h$vh))
-
-		# Color gradient comparing to asymmetric symmetric without network, i.e.,  (1/n)
-		#vhl = (1/n)/vhmax
-		
-		nullret = vhest(0,0,h.to.plot,n,prop.to.plot,Alpha[1],Beta[1])
-		# Color gradient to compare asymmetric to asymmetric without network, i.e., ((1-pc)/pc)*(1/n)
-		vhl = nullret[3]/vhmax
-		colfn = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
-							values = c(0,vhl/2,vhl,2*vhl,1),  limits = c(0,vhmax))
-
-		vnl = nullret[4]/vnmax
-		colfn2 = scale_fill_gradientn(colors = c("black","blue","white","red","black"),
-								values = c(0,vnl/2,vnl,2*vnl,1), limits = c(0,vnmax))
-
-		g7.1 = ggplot(plot.df.1, aes(x=p, y=q, fill=plot.simhet)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "simhet  ", tag = "A") + 
-			theme(plot.title = element_text(face = "bold", size = rel(1.25)),
-						axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)),
-						legend.text = element_text(size = rel(1.1))) 
-		g7.2 = ggplot(plot.df.1, aes(x=p, y=q, fill=plot.simn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "simn    ", tag = "")+
-			theme(axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)),
-						legend.text = element_text(size = rel(1.1)))
-		g7.3 = ggplot(plot.df.2, aes(x=p, y =q, fill=plot.simhet)) + geom_tile() + colfn + facet_grid(h ~ seeds) + labs(fill = "simhet  ", tag = "B") + 
-			theme(plot.title = element_text(face = "bold", size = rel(1.25)),
-						axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)),
-						legend.text = element_text(size = rel(1.1)))
-		g7.4 = ggplot(plot.df.2, aes(x=p, y =q, fill=plot.simn)) + geom_tile() + colfn2 + facet_grid(h ~ seeds) + labs(fill = "simn    ", tag = "")+
-			theme(axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)),
-						legend.text = element_text(size = rel(1.1)))
-		g7.5 = ggplot(plot.df.vhest.h, aes(x=p,y=q,fill=vh))+geom_tile()+colfn+facet_grid(h ~ seeds) + labs(fill = "esthet  ", tag = "C") + 
-			theme(plot.title = element_text(face = "bold", size = rel(1.25)),
-						axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)),
-						legend.text = element_text(size = rel(1.1)))
-		g7.6 = ggplot(plot.df.vhest.h, aes(x=p,y=q,fill=vn))+geom_tile()+colfn2+facet_grid(h ~ seeds) + labs(fill = "estn    ", tag = "")+
-			theme(axis.title = element_text(size = rel(1.25)),
-						strip.text = element_text(size = rel(1.25)),
-						legend.text = element_text(size = rel(1.1)))
-
-
-		filename = paste(c(label,"-fig-sim-est.png"), collapse="")
-		res.factor = 3
-		png(filename, height = 1000*res.factor, width = 1000*res.factor, res = 72*res.factor)
-		grid.arrange(g7.1, g7.2, g7.3, g7.4, g7.5, g7.6, nrow = 3)
 		dev.off()
 	}
 }
