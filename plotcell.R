@@ -18,7 +18,7 @@ circleFun <- function(center = c(0,0),diameter = 2, npoints = 100){
 circledat <- circleFun()
 
 # function to produce a visualisation given a particular label for simulation output 
-makeplot = function(string, titlestr="") {
+makeplot = function(string, titlestr="", tag = "") {
   # read network and mtDNA position data
   net.df = read.csv(paste(c("network-", string, ".csv"), collapse=""))
   dna.df = read.csv(paste(c("mtdna-", string, ".csv"), collapse=""))
@@ -30,20 +30,22 @@ makeplot = function(string, titlestr="") {
     geom_point(data = dna.df, aes(x=x, y=y, color=factor(type))) +                  # mtDNAs
     theme_void() +
     theme(legend.position = "none") +
-    ggtitle(titlestr) )
+    ggtitle(titlestr)+
+    labs(tag = tag)+
+    theme(plot.title = element_text(size = rel(1.25))))
 }
 
 # strings in output filenames follow the format
 # h, nseed, p, q, lambda, halo, perturb
-plot.1 = makeplot("0.5-4-0.00-0.00-0.00-0.00-2", "low nseed, p=q=0")
-plot.2 = makeplot("0.5-4-0.50-0.50-0.00-0.00-2", "low nseed, p=q=0.5")
-plot.3 = makeplot("0.5-4-1.00-0.00-0.00-0.00-2", "low nseed, p=1,q=0")
-plot.4 = makeplot("0.5-16-0.50-0.50-0.00-0.00-2", "mid nseed, p=q=0.5")
-plot.5 = makeplot("0.5-64-0.50-0.50-0.00-0.00-2", "high nseed, p=q=0.5")
-plot.6 = makeplot("0.5-16-1.00-1.00-0.00-0.00-2", "mid nseed, p=q=1")
-plot.7 = makeplot("0.5-16-1.00-1.00-0.04-0.00-2", "mid nseed, p=q=1, mid diff")
-plot.8 = makeplot("0.5-16-1.00-1.00-0.10-0.00-2", "mid nseed, p=q=1, high diff")
-plot.9 = makeplot("0.5-16-1.00-1.00-0.00-0.10-2", "mid nseed, p=q=1, repel")
+plot.1 = makeplot("0.5-4-0.00-0.00-0.00-0.00-2", "Small s,\n p=q=0", "A")
+plot.2 = makeplot("0.5-4-0.50-0.50-0.00-0.00-2", "small s,\n p=q=0.5", "B")
+plot.3 = makeplot("0.5-4-1.00-0.00-0.00-0.00-2", "Small s,\n p=1,q=0", "C")
+plot.4 = makeplot("0.5-16-0.50-0.50-0.00-0.00-2", "Medium s,\n p=q=0.5", "D")
+plot.5 = makeplot("0.5-64-0.50-0.50-0.00-0.00-2", "Large s,\n p=q=0.5", "E")
+plot.6 = makeplot("0.5-16-1.00-1.00-0.00-0.00-2", "Medium s,\n p=q=1", "F")
+plot.7 = makeplot("0.5-16-1.00-1.00-0.04-0.00-2", "Medium s,\n p=q=1,\n Medium λ", "G")
+plot.8 = makeplot("0.5-16-1.00-1.00-0.10-0.00-2", "Medium s,\n p=q=1,\n Large λ","H")
+plot.9 = makeplot("0.5-16-1.00-1.00-0.00-0.10-2", "Medium s,\n p=q=1,\n repel","I")
 
 # bump to output file
 res.factor = 3

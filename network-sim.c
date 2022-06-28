@@ -6,14 +6,14 @@
 #include <string.h>
 
 #define RND drand48()
-#define PI 3.14159
+#define PI 3.1415927
 
 double BRANCH = 0.02; // branch probability per timestep
 double DELTA = 0.01;  // growth rate per timestep
 int MAXN = 10000;     // memory limit for number of network segments
 int MAXM = 100;       // number of mtDNAs
 double MASS = 50;     // required network mass
-int NSIM = 100;      // number of simulations for each parameterisation
+//int NSIM = 10000;      // number of simulations for each parameterisation
 int NSTEPS = 100;     // number of gaussian steps to take after fragmentation (if this scheme is chosen)
 
 // structure to store summary statistics from a set of simulations
@@ -78,9 +78,16 @@ int onSegment(double px, double py, double qx, double qy, double rx, double ry)
 // this one computes the orientation of a set of three points (or whether they are colinear)
 int orientation(double px, double py, double qx, double qy, double rx, double ry)
 {
-  int val = (qy-py)*(rx-qx) - (qx-px)*(ry-qy);
+  double val = (qy-py)*(rx-qx) - (qx-px)*(ry-qy);
   if(val == 0) return 0;
   return (val > 0 ? 1 : 2);
+}
+
+// Computes the intersection between y = a*x and the line y = slope*x+d, describing the segment, supposing xu > xl
+double getSegmentXIntercept(double xl, double yl, double xu, double yu, double c){
+	double a;
+	a = (yu-yl)/(xu-xl);
+	return((yl-a*xl)/(c-a));
 }
 
 // this one returns 1/0 intersection given two line segments described by start and end points 
@@ -109,6 +116,90 @@ int doIntersect(double p1x, double p1y, double q1x, double q1y, double p2x, doub
   if (o4 == 0 && onSegment(p2x, p2y, q1x, q1y, q2x, q2y)) return 1;
   
   return 0;
+}
+
+double getSegmentPropIn(double xl, double yl, double xu, double yu, double phi){
+	double propin;
+	int int1, int2;
+	double xi, xf; // intersections
+	double slope;  // slope of segment
+		
+	int1 = doIntersect(xl,yl,xu,yu,0,0,1,0);
+  int2 = doIntersect(xl,yl,xu,yu,0,0,cos(phi),sin(phi));
+  
+	if(int1 == 1 && int2 == 1){
+		if(phi!=PI/2){
+			if(xu!=xl){
+				xi = getSegmentXIntercept(xl,yl,xu,yu,0);
+				xf = getSegmentXIntercept(xl,yl,xu,yu,tan(phi));
+				if(xi == xf){//only for (0,0)
+					slope = (yu-yl)/(xu-xl);
+					if(0<slope && slope<=tan(phi))propin = xu/(xu-xl);
+					else propin = 0;
+				}else{
+					if(yu==yl)propin = 0;
+					else propin = fabs(xi-xf)/(xu-xl);
+				}
+			}else propin = mymax(yu,yl)/fabs(yu-yl);
+	  }else if(phi == PI/2){
+			if(xu!=xl){
+				xi = getSegmentXIntercept(xl,yl,xu,yu,0);
+				propin = xi/(xu-xl);
+			}else propin = 0.5*(mymax(yu,yl)-mymax(0,mymin(yu,yl)))/fabs(yu-yl); // only for xu == xl == 0
+		}
+	}else if(int1 == 1 && int2 == 0){ // angle should be irrelevant here, since it does not change for any of the cases
+		if(xu!=xl){
+			xi = getSegmentXIntercept(xl,yl,xu,yu,0);
+			slope = (yu-yl)/(xu-xl);
+			if(slope>0) propin =(xu-xi)/(xu-xl);
+			else if(slope == 0) propin = 0.5;
+			else propin = (xi-xl)/(xu-xl);
+		}else propin = mymax(yu,yl)/fabs(yu-yl);
+	}else if(int1 == 0 && int2 == 1){
+		if(phi!=PI/2){
+			if(xu!=xl){
+				xi = getSegmentXIntercept(xl,yl,xu,yu,tan(phi));
+				slope = (yu-yl)/(xu-xl);
+				if(slope<tan(phi))propin = (xu-xi)/(xu-xl);
+				else if(slope == tan(phi))propin = 0.5;
+				else propin = (xi-xl)/(xu-xl);
+			}else{
+				if(phi<PI/2) propin = (xu*tan(phi)-mymin(yu,yl))/fabs(yu-yl);
+				else propin = (mymax(yu,yl)-xu*tan(phi))/fabs(yu-yl);
+			}
+		}else if(phi == PI/2){
+			if(xu!=xl) propin = xu/(xu-xl);  // this should be an error due to rounding
+			else propin = 0.5;
+		}
+	}else{ // no intersections
+		if(phi!=PI/2){
+			if(phi<PI/2){
+			  if(xu>0 && xl>0 && yu>0 && yu<xu*tan(phi) && yl>0 && yl<xl*tan(phi))propin = 1;
+				else propin = 0;
+			}else{
+				if(xu>0 && xl>0 && yu>0 && yl>0) propin = 1;
+				else if(xu==0 && xl==0 && yu>0)propin = (mymax(yu,yl)-mymax(0,mymin(yu,yl)))/fabs(yu-yl);
+				else if(xu<0 && xl<0 && yu > xu*tan(phi) && yl > xl*tan(phi))propin = 1;
+				else if(yu == 0 && yl == 0 && xu<0) propin = 0.5;
+				else if(xu>0 && xl<0 && yu > 0 && yl>xl*tan(phi)) propin = 1;
+				else propin = 0;
+			}
+		}else if(phi == PI/2){
+			if(xu>0 && xl>0 && yu>0 && yl>0) propin = 1;
+			else if(xu == 0 && xl == 0 && yu>0) propin = 0.5*(mymax(yu,yl)-mymax(0,mymin(yu,yl)))/fabs(yu-yl);
+			else propin = 0;
+		}else printf("wtf -- phi > PI!\n");
+	}
+	if(propin > 1 || propin < 0){
+		printf("wtf-new\n");
+		printf("(int1, int2) = (%i, %i)\t",int1,int2);
+		printf("(xl, yl) = (%.7f, %.7f)\t", xl,yl);
+		printf("(xu, yu) = (%.7f, %.7f)\t", xu,yu);
+		printf("(phi,propin) = (%.3f,%.3f)\n\n",phi,propin);
+	}
+	
+	
+	return(propin);
 }
 
 void BuildNetwork(int nseed, double *xs, double *ys, double *xe, double *ye, int *finaln)
@@ -397,70 +488,116 @@ void Output(double *xs, double *ys, double *xe, double *ye, int n, double *mx, d
   fclose(fp);
 }
 
-void GetStats(double *xs, double *ys, double *xe, double *ye, int n, double *mx, double *my, int *mt, int *networked, int *wn, int *wc, int *mn, int *mc, double *d, double *u, double ystar)
+void GetStats(double *xs, double *ys, double *xe, double *ye, int n, double *mx, double *my, int *mt, int *networked, int *wn, int *wc, int *mn, int *mc, double *d, double *u, double phi)//double ystar)
 {
   int i, j;
   int counter;
   double mindist;
   double thisdist;
   double thislen;
-  double propupper;
+  double propin;
   double total;
-  
+  double xi,yi,xf,yf;
+  double xl,xu,yu,yl;
+  int int1, int2;
+	
   // compute statistics of one daughter cell
   // hstat -- this simulation's heteroplasmy for y > y*
   // nstat -- this simulation's mtDNA count for y > y*
   *wc = *wn = *mc = *mn = 0;
-  for(i = 0; i < MAXM; i++)
-    {
-      if(my[i] > ystar)
-	{
-	  if(mt[i] == 0 && networked[i] == 0) (*wc)++;
-	  if(mt[i] == 0 && networked[i] == 1) (*wn)++;
-	  if(mt[i] == 1 && networked[i] == 0) (*mc)++;
-	  if(mt[i] == 1 && networked[i] == 1) (*mn)++;
-	}
+  if(0< phi && phi<PI/2)
+  { 
+    for(i = 0; i < MAXM; i++)
+    {    
+      if(mx[i]>0 && my[i]>0 && my[i]<mx[i]*tan(phi))//> ystar)
+      {
+        if(mt[i] == 0 && networked[i] == 0) (*wc)++;
+        if(mt[i] == 0 && networked[i] == 1) (*wn)++;
+        if(mt[i] == 1 && networked[i] == 0) (*mc)++;
+        if(mt[i] == 1 && networked[i] == 1) (*mn)++;
+      }
     }
-
+  }else if(phi==PI/2){
+    for(i = 0; i < MAXM; i++)
+    {    
+      if(mx[i]>0 && my[i]>0)//> ystar)
+      {
+        if(mt[i] == 0 && networked[i] == 0) (*wc)++;
+        if(mt[i] == 0 && networked[i] == 1) (*wn)++;
+        if(mt[i] == 1 && networked[i] == 0) (*mc)++;
+        if(mt[i] == 1 && networked[i] == 1) (*mn)++;
+      }
+    }
+  }else if(phi>PI/2 && phi<PI){
+    for(i = 0; i < MAXM; i++)
+    {    
+      if(mx[i]>=0 && my[i]>0){
+        if(mt[i] == 0 && networked[i] == 0) (*wc)++;
+        if(mt[i] == 0 && networked[i] == 1) (*wn)++;
+        if(mt[i] == 1 && networked[i] == 0) (*mc)++;
+        if(mt[i] == 1 && networked[i] == 1) (*mn)++;
+      }
+      if(mx[i]<0 && my[i]>mx[i]*tan(phi)){
+        if(mt[i] == 0 && networked[i] == 0) (*wc)++;
+        if(mt[i] == 0 && networked[i] == 1) (*wn)++;
+        if(mt[i] == 1 && networked[i] == 0) (*mc)++;
+        if(mt[i] == 1 && networked[i] == 1) (*mn)++;
+      }
+    }
+  }else if(phi == PI){
+    for(i = 0; i < MAXM; i++){    
+      if(my[i]>0){
+        if(mt[i] == 0 && networked[i] == 0) (*wc)++;
+        if(mt[i] == 0 && networked[i] == 1) (*wn)++;
+        if(mt[i] == 1 && networked[i] == 0) (*mc)++;
+        if(mt[i] == 1 && networked[i] == 1) (*mn)++;
+      }
+    }
+  }
+  
   // compute mean minimum distance between mtDNAs
   // to do -- subset this into e.g. networked, same genetics, etc
   *d = 0; counter = 0;
   // loop through mtDNAs
   for(i = 0; i < MAXM-1; i++)
+  {
+    mindist = -1;
+    // loop through partners, compute dist and compare to minimum
+    for(j = i+1; j < MAXM; j++)
     {
-      mindist = -1;
-      // loop through partners, compute dist and compare to minimum
-      for(j = i+1; j < MAXM; j++)
-	{
-	  thisdist = (mx[i]-mx[j])*(mx[i]-mx[j]) + (my[i]-my[j])*(my[i]-my[j]);
-	  if(thisdist < mindist || mindist == -1)
-	    mindist = thisdist;
-	  counter++;
-	}
-      *d += sqrt(mindist);
-    }
+      thisdist = (mx[i]-mx[j])*(mx[i]-mx[j]) + (my[i]-my[j])*(my[i]-my[j]);
+      if(thisdist < mindist || mindist == -1)
+        mindist = thisdist;
+      counter++;
+     }
+     *d += sqrt(mindist);
+  } 
   *d /= counter;
-
-  // compute amount of network mass in upper cell, looping through network fragments
+  
   *u = 0; total = 0;
-  for(i = 0; i < n; i++)
-    {
-      thislen = (xe[i]-xs[i])*(xe[i]-xs[i]) + (ye[i]-ys[i])*(ye[i]-ys[i]);
-      thislen = sqrt(thislen);
-      // if all or none is in the upper cell, record this, otherwise record proportion of mass that is
-      if(ye[i] > ystar && ys[i] > ystar) propupper = 1;
-      else if(ye[i] < ystar && ys[i] < ystar) propupper = 0;
-      else if(ye[i] > ys[i]) propupper = (ye[i]-ystar)/(ye[i]-ys[i]);
-      else propupper = (ys[i]-ystar)/(ys[i]-ye[i]);
-      if(propupper > 1 || propupper < 0)
-	printf("wtf\n");
-      *u += thislen*propupper;
-      total += thislen;
-    }
+  // compute amount of network mass in upper cell, looping through network fragments
+  // Points defining the lines defining the daughter of interest (for counting network mass)		       
+  
+	for(i = 0; i < n; i++)
+	{
+		thislen = (xe[i]-xs[i])*(xe[i]-xs[i])+(ye[i]-ys[i])*(ye[i]-ys[i]);
+		thislen = sqrt(thislen);
+		xl = mymin(xs[i],xe[i]); xu = mymax(xs[i],xe[i]);
+		if(xu == xe[i]){
+			yu = ye[i];
+			yl = ys[i];
+		}else{
+			yu = ys[i];
+			yl = ye[i];
+		}
+		propin = getSegmentPropIn(xl,yl,xu,yu,phi);
+		*u += propin*thislen;
+		total += thislen;
+	}
+  //printf("phi = %.3f, wn, mn, wc, mc = %i, %i, %i, %i, u = %.3f, total = %.3f\n", phi, *wn, *mn, *wc, *mc, *u, total);
 }
-
 // rather verbose function to compute summary statistics given outputs of NSIM simulations
-void ComputeStats(Stats *s, SumStats *ss)
+void ComputeStats(Stats *s, SumStats *ss, int NSIM)
 {
   double w, m, n;
   int i;
@@ -516,7 +653,6 @@ void ComputeStats(Stats *s, SumStats *ss)
       ss->mum3 += (m-ss->mm)*(m-ss->mm)*(m-ss->mm);
       ss->muw4 += (w-ss->mw)*(w-ss->mw)*(w-ss->mw)*(w-ss->mw);
       ss->mum4 += (m-ss->mm)*(m-ss->mm)*(m-ss->mm)*(m-ss->mm);
-      
       ss->vh += (m/(w+m)-ss->mh)*(m/(w+m)-ss->mh);
     }
   ss->vw /= NSIM-1; ss->vm /= NSIM-1; ss->vn /= NSIM-1;
@@ -524,6 +660,8 @@ void ComputeStats(Stats *s, SumStats *ss)
   ss->cwm /= NSIM-1; ss->cw2m /= NSIM-1; ss->cw3m /= NSIM-1; ss->cwm2 /= NSIM-1; ss->cwm3 /= NSIM-1; ss->cw2m2 /= NSIM-1;
   ss->vh /= NSIM-1;
   ss->muw3 /= NSIM-1; ss->mum3 /= NSIM-1; ss->muw4 /= NSIM-1; ss->mum4 /= NSIM-1;
+	
+  //printf("mh, vh, mu, vu = %.3f, %.3f, %.3f, %.3f\n", ss->mh, ss->vh, ss->mu, ss->vu);
 }
 
 int main(int argc, char *argv[])
@@ -540,6 +678,7 @@ int main(int argc, char *argv[])
   double newx, newy;
   int nactive;
   int sim;
+  int deadcells;
   char str[100];
   double *mx, *my;
   int *mt, *networked;
@@ -562,42 +701,59 @@ int main(int argc, char *argv[])
   double total, thislen;
   Stats *stats;
   SumStats ss;
-  double ystar;
-  int error;
+  double prop, phi;
+  int error, errorprop;
+  int NSIM, nsim;
   
   error = 1;
+  errorprop = 1;
 
-  if(argc == 5 || argc == 9)
+  if(argc == 6 || argc == 10)
     {
-      if(argc == 5 && strcmp(argv[1], "--simulate\0") == 0)
+      if(argc == 6 && strcmp(argv[1], "--simulate\0") == 0)
 	{
 	  expt = 1;
-	  ystar = atof(argv[2]);
+	  prop = atof(argv[2]);
 	  het = atof(argv[3]);
 	  nseed = atof(argv[4]);
+		nsim = atof(argv[5]);
 	  error = 0;
+	  errorprop = 0;
 	}
-      if(argc == 9 && strcmp(argv[1], "--snapshots\0") == 0)
+      if(argc == 10 && strcmp(argv[1], "--snapshots\0") == 0)
 	{
 	  expt = 0;
 	  error = 0;
-	  ystar = atof(argv[2]);
+		errorprop = 0;
+	  prop = atof(argv[2]);
 	  het = atof(argv[3]);
 	  nseed = atof(argv[4]);
-	  inc0 = atof(argv[5]);
-	  inc1 = atof(argv[6]);
-	  lambda = atof(argv[7]);
-	  halo = atof(argv[8]);
+		nsim = atof(argv[5]);
+	  inc0 = atof(argv[6]);
+	  inc1 = atof(argv[7]);
+	  lambda = atof(argv[8]);
+	  halo = atof(argv[9]);
 	}
     }
   
   if(error == 1)
     {
-      printf("Usage:\n  ./network-sim.ce --snapshots [ystar] [h] [seeds] [p] [q] [lambda] [halo]\n    [provide cell snapshots and exit]\n");
-      printf("  ./network.sim.ce --simulate [ystar] [h] [seeds]\n    [simulate with ystar=0.1, h=0.5, seeds=16\n");
+      printf("Usage:\n  ./network-sim.ce --snapshots [prop] [h] [seeds] [nsim] [p] [q] [lambda] [halo]\n    [provide cell snapshots and exit]\n");
+      printf("  ./network.sim.ce --simulate [prop] [h] [seeds]\n    [simulate with prop = 0.50, h=0.5, seeds=16\n");
       return -1;
     }
-
+  if(errorprop == 1)
+  {
+    printf("Usage:\n  ./network-sim.ce --snapshots [prop] [h] [seeds] [p] [q] [lambda] [halo]\n    [provide cell snapshots and exit]\n");
+    printf("  ./network.sim.ce --simulate [prop] [h] [seeds] [nsim] \n    [simulate nsim = 1000 with prop = 0.50, h=0.5, seeds=16\n");
+    printf("Error: Requires 0<prop; please try again with a different prop [daughter cell proportion of the parent cell]\n");
+    return -1;
+  }
+  if(prop>0.5) prop = prop - round(prop/0.5)*0.5; // subtract however many 0.5s by which prop exceeds the domain (0,0.5].
+  
+  phi = 2*PI*prop;
+  NSIM = nsim;
+  
   perturbtype = 2;
   
   // allocate memory for mitochondrial strand and mtDNA properties
@@ -642,10 +798,10 @@ int main(int argc, char *argv[])
   stats = (Stats*)malloc(sizeof(Stats)*NSIM);
 
   // file for output
-  sprintf(str, "output-%.3f-%.3f-%.0f.csv", ystar, het, nseed);
+  sprintf(str, "output-%.3f-%.3f-%.0f.csv", prop, het, nseed);
   fpout = fopen(str, "w");
-  fprintf(fpout, "ystar,h,seeds,p,q,lambda,halo,");
-  fprintf(fpout, "mw,vw,mm,vm,cwm,cw2m,cw3m,cwm2,cwm3,cw2m2,muw3,mum3,muw4,mum4,mh,vh,md,vd,mu,vu,mn,vn\n");
+  fprintf(fpout, "prop,h,seeds,p,q,lambda,halo,");
+  fprintf(fpout, "mw,vw,mm,vm,cwm,cw2m,cw3m,cwm2,cwm3,cw2m2,muw3,mum3,muw4,mum4,mh,vh,md,vd,mu,vu,mn,vn,dc\n");
 
   
   // workhorse part -- a very nested loop scanning through the parameters, according to the protocol we fixed above
@@ -659,14 +815,16 @@ int main(int argc, char *argv[])
     {
       for(inc1 = inc1s; inc1 <= inc1e; inc1 += inc1a)
 	{
-	  printf("%.2f %f %f %f\n", het, nseed, inc0, inc1);
+	  printf("%.2f %.2f %f %f %f\n", prop, het, nseed, inc0, inc1);
 
 	  for(lambda = lambdas; lambda <= lambdae; lambda += lambdaa)
 	    {
 	      for(halo = halos; halo <= haloe; halo += haloa)
 		{
 		  // loop through NSIM simulations
-		  for(sim = 0; sim < NSIM; sim++)
+		  sim = 0;
+		  deadcells = 0;
+		  while(sim < NSIM)
 		    {
 
 		      // build network and try to place mtDNAs, keep looping until we have successfully placed all
@@ -682,20 +840,26 @@ int main(int argc, char *argv[])
 			PerturbDNA(lambda, mx, my, perturbtype);
 			 
 		      // get and output statistics
-		      GetStats(xs, ys, xe, ye, n, mx, my, mt, networked, &wn, &wc, &mn, &mc, &d, &u, ystar);
-		      stats[sim].wn = wn;
-		      stats[sim].wc = wc;
-		      stats[sim].mn = mn;
-		      stats[sim].mc = mc;			      
-		      stats[sim].u = u;
-		      stats[sim].d = d;
+		      GetStats(xs, ys, xe, ye, n, mx, my, mt, networked, &wn, &wc, &mn, &mc, &d, &u, phi);
+		      if(wn+mn+wc+mc==0){
+			  deadcells+=1;
+		      }else{
+			 stats[sim].wn = wn;
+		         stats[sim].wc = wc;
+		         stats[sim].mn = mn;
+		         stats[sim].mc = mc;
+		         stats[sim].u = u;
+		         stats[sim].d = d;
+			 sim += 1;
+		      }
 		    }
 		  // compute summary statistics for this set of simulations
-		  ComputeStats(stats, &ss);
+		  ComputeStats(stats, &ss, NSIM);
 
 		  // output statistics for this set
-		  fprintf(fpout, "%.3f,%.2f,%.0f,%f,%f,%f,%f,", ystar, het, nseed, inc0, inc1, lambda, halo);
-		  fprintf(fpout, "%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e\n", ss.mw, ss.vw, ss.mm, ss.vm, ss.cwm, ss.cw2m, ss.cw3m, ss.cwm2, ss.cwm3, ss.cw2m2, ss.muw3, ss.mum3, ss.muw4, ss.mum4, ss.mh, ss.vh, ss.md, ss.vd, ss.mu, ss.vu, ss.mn, ss.vn);
+		  printf("Should print!\n");
+		  fprintf(fpout, "%.3f,%.2f,%.0f,%f,%f,%f,%f,", prop, het, nseed, inc0, inc1, lambda, halo);
+		  fprintf(fpout, "%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%e,%i\n", ss.mw, ss.vw, ss.mm, ss.vm, ss.cwm, ss.cw2m, ss.cw3m, ss.cwm2, ss.cwm3, ss.cw2m2, ss.muw3, ss.mum3, ss.muw4, ss.mum4, ss.mh, ss.vh, ss.md, ss.vd, ss.mu, ss.vu, ss.mn, ss.vn, deadcells);
 		}
 	    }
 	}
