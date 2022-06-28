@@ -24,7 +24,7 @@ Code
   * lambda: ranges from 0 to 0.1 inclusive -- whether to perturb mtDNA molecules before outputing statistics.
   * repel: 1 (true) or 0 (false) -- whether mtDNA molecules are self-avoiding or not
 
-For example `./network-sim.ce --snapshot 0.5 0.1 4 0.5 0.5 0.04 0` outputs summary statistics and simulation snapshots for het = 0.1, nseeds = 4, p=q=0.5, lambda = 0.04 and no self-avoidance of mtDNA molecules.
+For example `./network-sim.ce --snapshot 0.5 0.1 4 1 0.5 0.5 0.04 0` outputs summary statistics and simulation snapshots for het = 0.1, nseeds = 4, p=q=0.5, lambda = 0.04 and no self-avoidance of mtDNA molecules.
 
 * `plotcell.R` -- plots visualisations from simulation snapshots
 * `compare-both-new.R` -- compares physical simulation, statistical simulation, and theory for different statistics
