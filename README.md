@@ -14,7 +14,7 @@ Wrapper scripts
 Code
 ====
 * `network-sim.c` -- code to simulate partitioning of mtDNAs given some simulated network structure. Takes nine command-line parameters:
-  * switches: --snapshot or --simulate -- whether to output cell snapshot only, or to simulate the full number of simulations. 
+  * switches: --snapshots or --simulate -- whether to output cell snapshots only, or to simulate the full number of simulations. 
   * prop: ranges from 0 to 0.5 noninclusive -- the proportions of the parent cell apportioned to the smallest daughter.
   * het: ranges from 0 to 1 inclusive -- initial heteroplasmy.
   * nseeds: nonnegative integer -- number of intial growth points for the network.
